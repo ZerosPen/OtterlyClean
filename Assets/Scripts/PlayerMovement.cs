@@ -35,9 +35,13 @@ public class PlayerMovement : Player
 
     private void FixedUpdate()
     {
-        Vector2 direction = new Vector2(directionX, directionY).normalized;
-        Vector2 targetSpeed = direction * maxSpeedMovement;
-
-        rb.velocity = Vector2.SmoothDamp(rb.velocity, targetSpeed, ref currentVelocity, 0.1f);
+        if (Mathf.Abs(rb.velocity.x) < maxSpeedMovement)
+        {
+            rb.AddForce(Vector2.right * directionX * speedMovement);
+        }
+        if (Mathf.Abs(rb.velocity.y) < maxSpeedMovement)
+        {
+            rb.AddForce(Vector2.up * directionY * speedMovement);
+        }
     }
 }

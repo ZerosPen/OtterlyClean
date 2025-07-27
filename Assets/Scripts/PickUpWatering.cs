@@ -7,41 +7,21 @@ public class PickUpWatering : MonoBehaviour
 {
     public GameObject wateringCan;        
     public Transform playerHoldPoint;     
-    private bool canPickUp = false;
-
-    private void OnTriggerEnter2D(Collider2D other)
+    public bool canPickUp = true;
+    public bool isPickUp;
+    
+    public void PickUpWateringCan()
     {
-        if (other.CompareTag("Player"))
-        {
-            canPickUp = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        if (canPickUp && wateringCan != null && playerHoldPoint != null)
         {
             canPickUp = false;
+            isPickUp = true;
+            wateringCan.transform.SetParent(playerHoldPoint);
+            wateringCan.transform.localPosition = Vector3.zero;
+            wateringCan.transform.localRotation = Quaternion.identity;
         }
-    }
-
-    private void Update()
-    {
-        if (canPickUp && Input.GetKeyDown(KeyCode.E))
-        {
-            PickUpWateringCan();
+        else{
+            Debug.Log("Watering is been pickUped");
         }
-    }
-
-    private void PickUpWateringCan()
-    {
-        wateringCan.SetActive(true); // In case it's hidden
-        wateringCan.transform.SetParent(playerHoldPoint);
-        wateringCan.transform.localPosition = Vector3.zero;
-        wateringCan.GetComponent<Rigidbody2D>().simulated = false;
-        wateringCan.GetComponent<Collider2D>().enabled = false;
-
-        Debug.Log("Watering can picked up!");
-        gameObject.SetActive(false); // Disable trigger box after pickup
     }
 }

@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [Header("Status")]
     public KeyCode interacButton = KeyCode.E;
+    public KeyCode WateringButton = KeyCode.F;
     public Transform interact;
     public float interactRadius;
     public LayerMask triggerBox;
@@ -13,13 +14,12 @@ public class Player : MonoBehaviour
 
     private QTE_MoopSweep QTEMoopSweep;
     private PlayerMovement playerMovement;
-    private PickUpWatering pickUpWatering;
+    public PickUpWatering pickUpWatering;
 
     private void Start()
     {
         QTEMoopSweep = GetComponent<QTE_MoopSweep>();
         playerMovement = GetComponent<PlayerMovement>();
-        pickUpWatering = GetComponent<PickUpWatering>();
     }
 
     private void Update()
@@ -56,13 +56,33 @@ public class Player : MonoBehaviour
 
                 if (collid.name == "BoxWaterCan")
                 {
-                    Debug.Log($"Try Interact with {collid.name}");
+                    pickUpWatering.PickUpWateringCan();
                 }
 
                 break;
             }
 
-            if (canInteract) Debug.Log($"Press E to Interact {collid.name}");
+            if (Input.GetKeyDown(WateringButton))
+            {
+                if (collid.name == "Plant")
+                {
+                    PlantWater plant = collid.GetComponent<PlantWater>();
+                    if (pickUpWatering.canPickUp)
+                    {
+                        Debug.Log("Pick Up the watering can!");
+                    }
+                    else
+                    {
+                        Debug.Log("Press F to watering the plant!");
+                        plant.WateringPlant();
+                    }
+                }
+
+                break;
+            }
+
+
+            if (canInteract && collid.name != "Plant") Debug.Log($"Press E to Interact {collid.name}");
         }
     }
 

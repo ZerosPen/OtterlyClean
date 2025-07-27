@@ -6,12 +6,12 @@ public class QTEManager : MonoBehaviour
 {
     public static QTEManager Instance;
 
-    [Header("UI Setttings")]
-    public TextMeshProUGUI keyDisplay;
+    [Header("UI Settings")]
+    private TextMeshProUGUI keyDisplay;
     public GameObject qtePanel;
     public GameObject qteKeyPrefab;
-    public Canvas canvas;
-    public Transform playerTransform; 
+    private Canvas canvas;
+    private Transform playerTransform;
 
     [Header("QTE Settings")]
     public List<KeyCode> comboSequence = new List<KeyCode>();
@@ -21,11 +21,17 @@ public class QTEManager : MonoBehaviour
 
     [SerializeField] private float timerPerKey = 2f;
     private float timer;
+    private List<GameObject> activeKeyUIs = new List<GameObject>();
+    private List<GameObject> keyUIPool = new List<GameObject>();
 
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        canvas = FindObjectOfType<Canvas>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) playerTransform = player.transform;
     }
 
     public void StartQTE(List<KeyCode> sequence)
@@ -36,14 +42,14 @@ public class QTEManager : MonoBehaviour
         isDone = false;
         timer = timerPerKey;
 
-        GameObject keyUI = Instantiate(qteKeyPrefab, canvas.transform);
+        GameObject keyUI = GetOrCreateKeyUI();
+        keyUI.SetActive(true);
+        activeKeyUIs.Add(keyUI);
+
         UI_QTE_Follow followScript = keyUI.GetComponent<UI_QTE_Follow>();
+        followScript.Initialize(playerTransform, canvas);
 
-        followScript.playerTransform = playerTransform;
-        followScript.canvas = canvas;
-
-        keyDisplay = keyUI.GetComponent<TextMeshProUGUI>();
-
+        keyDisplay = keyUI.GetComponentInChildren<TextMeshProUGUI>();
         qtePanel.SetActive(true);
         ShowCurrentKey();
     }
@@ -81,6 +87,18 @@ public class QTEManager : MonoBehaviour
             EndQTE();
         }
     }
+    private GameObject GetOrCreateKeyUI()
+    {
+        foreach (GameObject obj in keyUIPool)
+        {
+            if (!obj.activeInHierarchy)
+                return obj;
+        }
+
+        GameObject newKeyUI = Instantiate(qteKeyPrefab, canvas.transform);
+        keyUIPool.Add(newKeyUI);
+        return newKeyUI;
+    }
 
     void ShowCurrentKey()
     {
@@ -97,11 +115,14 @@ public class QTEManager : MonoBehaviour
         qtePanel.SetActive(false);
 
         UI_QTE_Follow[] uiFollowers = FindObjectsOfType<UI_QTE_Follow>();
-        foreach (var follower in uiFollowers)
+        foreach (var obj in activeKeyUIs)
         {
-            Destroy(follower.gameObject);
+           obj.SetActive(false);
         }
+
+        activeKeyUIs.Clear();
     }
+
 
     public bool isActive()
     {

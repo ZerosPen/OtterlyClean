@@ -13,11 +13,13 @@ public class Player : MonoBehaviour
 
     private QTE_MoopSweep QTEMoopSweep;
     private PlayerMovement playerMovement;
+    private PickUpWatering pickUpWatering;
 
     private void Start()
     {
         QTEMoopSweep = GetComponent<QTE_MoopSweep>();
         playerMovement = GetComponent<PlayerMovement>();
+        pickUpWatering = GetComponent<PickUpWatering>();
     }
 
     private void Update()
@@ -52,7 +54,7 @@ public class Player : MonoBehaviour
                     Debug.Log($"Try Interact with {collid.name}");
                 }
 
-                if (collid.name == "Plant")
+                if (collid.name == "BoxWaterCan")
                 {
                     Debug.Log($"Try Interact with {collid.name}");
                 }

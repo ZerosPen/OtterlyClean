@@ -9,6 +9,9 @@ public class QTEManager : MonoBehaviour
     [Header("UI Setttings")]
     public TextMeshProUGUI keyDisplay;
     public GameObject qtePanel;
+    public GameObject qteKeyPrefab;
+    public Canvas canvas;
+    public Transform playerTransform; 
 
     [Header("QTE Settings")]
     public List<KeyCode> comboSequence = new List<KeyCode>();
@@ -32,6 +35,15 @@ public class QTEManager : MonoBehaviour
         QTEActive = true;
         isDone = false;
         timer = timerPerKey;
+
+        GameObject keyUI = Instantiate(qteKeyPrefab, canvas.transform);
+        UI_QTE_Follow followScript = keyUI.GetComponent<UI_QTE_Follow>();
+
+        followScript.playerTransform = playerTransform;
+        followScript.canvas = canvas;
+
+        keyDisplay = keyUI.GetComponent<TextMeshProUGUI>();
+
         qtePanel.SetActive(true);
         ShowCurrentKey();
     }
@@ -83,6 +95,12 @@ public class QTEManager : MonoBehaviour
         Debug.Log("QTE Ended");
         QTEActive = false;
         qtePanel.SetActive(false);
+
+        UI_QTE_Follow[] uiFollowers = FindObjectsOfType<UI_QTE_Follow>();
+        foreach (var follower in uiFollowers)
+        {
+            Destroy(follower.gameObject);
+        }
     }
 
     public bool isActive()

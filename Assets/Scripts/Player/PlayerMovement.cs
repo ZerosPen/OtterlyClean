@@ -6,7 +6,6 @@ public class PlayerMovement : Player
 {
     [Header("Movement")]
     public float speedMovement;
-    public float maxSpeedMovement;
     public float directionX;
     public float directionY;
 
@@ -18,6 +17,7 @@ public class PlayerMovement : Player
 
     private Rigidbody2D rb;
     private Vector2 currentVelocity;
+    private Vector2 inputDirection;
 
     private void Start()
     {
@@ -31,17 +31,18 @@ public class PlayerMovement : Player
                      Input.GetKey(movementRight) ? 1f : 0f;
         directionY = Input.GetKey(movementUp) ? 1f :
                      Input.GetKey(movementDown) ? -1f : 0f;
+
+        inputDirection = new Vector2(directionX, directionY).normalized;
     }
 
     private void FixedUpdate()
     {
-        if (Mathf.Abs(rb.velocity.x) < maxSpeedMovement)
-        {
-            rb.AddForce(Vector2.right * directionX * speedMovement);
-        }
-        if (Mathf.Abs(rb.velocity.y) < maxSpeedMovement)
-        {
-            rb.AddForce(Vector2.up * directionY * speedMovement);
-        }
+        rb.velocity = inputDirection * speedMovement;
+    }
+
+    public void StopMovement()
+    {
+        this.enabled = false;
+        rb.velocity = Vector2.zero;
     }
 }

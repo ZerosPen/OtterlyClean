@@ -3156,7 +3156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1003301579}
   qteManager: {fileID: 712649393}
-  combos: 5
+  combos: 4
   totalScore: 0
   isGameActive: 0
   isQTETrigger: 0

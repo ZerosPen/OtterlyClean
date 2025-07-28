@@ -21,7 +21,7 @@ public class QTEManager : MonoBehaviour
     public bool isDone;
 
     public float timerPerKey;
-    private float timer;
+    [SerializeField]private float timer;
     private List<GameObject> activeKeyUIs = new List<GameObject>();
     private List<GameObject> keyUIPool = new List<GameObject>();
 
@@ -118,6 +118,7 @@ public class QTEManager : MonoBehaviour
 
     public void AdvanceKey()
     {
+        timer = timerPerKey;
         currIndexKey++;
     }
 

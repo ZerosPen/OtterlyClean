@@ -14,7 +14,6 @@ public class QTE_MoopSweep : MonoBehaviour
 
     public void StartQTE()
     {
-        QTEManager.Instance.StartQTE(4);
         scoreToAdd = 0;
         timerPerKey = QTEManager.Instance.timerPerKey;
         timer = timerPerKey;
@@ -41,7 +40,9 @@ public class QTE_MoopSweep : MonoBehaviour
         {
             if (Input.GetKeyDown(QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]))
             {
-                Debug.Log($"Correct: {QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]}");
+                Debug.Log("Correct key!");
+                timerPerKey = QTEManager.Instance.timerPerKey;
+
                 scoreToAdd += baseScore;
             }
             else
@@ -64,7 +65,7 @@ public class QTE_MoopSweep : MonoBehaviour
         }
 
 
-        if (timer <= 0 || QTEManager.Instance.currIndexKey >= QTEManager.Instance.comboSequence.Count)
+        if (timer <= 0 || QTEManager.Instance.currIndexKey > QTEManager.Instance.comboSequence.Count)
         {
             onQTEFail();
         }
@@ -75,19 +76,22 @@ public class QTE_MoopSweep : MonoBehaviour
         isClean = true;
         isQTEActive = false;
 
+
         Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         if (player != null)
         {
-            scoreToAdd *= player.multiplierScore;
+            scoreToAdd = scoreToAdd * player.multiplierScore;
             player.AddScore(scoreToAdd);
         }
 
+        GameManager.Instance.onQTESucces();
         Debug.Log("QTE SUCCESS!");
     }
 
     void onQTEFail()
     {
         isQTEActive = false;
+        GameManager.Instance.onQTEFailed();
         Debug.Log("QTE FAIL!");
     }
 

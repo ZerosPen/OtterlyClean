@@ -111,12 +111,13 @@ public class Player : MonoBehaviour
     public void AddScore(float amountScore)
     {
         score += amountScore;
+        GameManager.Instance.totalScore = score;
         Debug.Log($"Amount score {score}");
     }
 
     IEnumerator SweepMoopQTE()
     {
-        QTEMoopSweep.StartQTE();
+        GameManager.Instance.StartQTE();
         playerMovement.StopMovement();
         playerMovement.enabled = false;
 

@@ -90,7 +90,7 @@ public class QTEManager : MonoBehaviour
         }
     }
 
-    void EndQTE()
+    public void EndQTE()
     {
         Debug.Log("QTE Ended");
         QTEActive = false;
@@ -118,9 +118,13 @@ public class QTEManager : MonoBehaviour
 
     public void AdvanceKey()
     {
-        if (currIndexKey < comboSequence.Count)
+        if (currIndexKey < comboSequence.Count - 1)
         {
             currIndexKey++;
+        }
+        else
+        {
+            Debug.LogWarning("Already at last index, won't advance!");
         }
         timer = timerPerKey;
     }

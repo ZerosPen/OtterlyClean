@@ -7,7 +7,7 @@ public class QTE_MoopSweep : MonoBehaviour
     [Header("QTE details")]
     private float timerPerKey;
     private float timer;
-    private bool isQTEActive;
+    [SerializeField]private bool isQTEActive;
     public bool isClean;
     public float baseScore;
     [SerializeField]private float scoreToAdd;
@@ -37,36 +37,31 @@ public class QTE_MoopSweep : MonoBehaviour
         timer -= Time.deltaTime;
 
         if (Input.anyKeyDown && QTEManager.Instance.currIndexKey < QTEManager.Instance.comboSequence.Count)
-{
-    bool correct = Input.GetKeyDown(QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]);
-
-    if (correct)
-    {
-        timerPerKey = QTEManager.Instance.timerPerKey;
-        scoreToAdd += baseScore;
-    }
-    else
-    {
-        Debug.Log("Wrong key!");
-    }
-
-    QTEManager.Instance.AdvanceKey();
-    timer = timerPerKey;
-
-    if (QTEManager.Instance.currIndexKey >= QTEManager.Instance.comboSequence.Count)
-    {
-        onQTESuccess();
-    }
-    else
-    {
-        QTEManager.Instance.ShowCurrentKey();
-    }
-}
-
-
-        if (timer <= 0)
         {
-            onQTEFail();
+            bool correct = Input.GetKeyDown(QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]);
+            bool isLastKey = QTEManager.Instance.currIndexKey == QTEManager.Instance.comboSequence.Count - 1;
+
+            if (correct)
+            {
+                timerPerKey = QTEManager.Instance.timerPerKey;
+                scoreToAdd += baseScore;
+
+                QTEManager.Instance.AdvanceKey();
+                timer = timerPerKey;
+
+                if (isLastKey)
+                {
+                    onQTESuccess();
+                }
+                else
+                {
+                    QTEManager.Instance.ShowCurrentKey();
+                }
+            }
+            else
+            {
+                Debug.Log("Wrong key!");
+            }
         }
     }
 
@@ -83,6 +78,7 @@ public class QTE_MoopSweep : MonoBehaviour
             player.AddScore(scoreToAdd);
         }
 
+        QTEManager.Instance.EndQTE();
         GameManager.Instance.onQTESucces();
         Debug.Log("QTE SUCCESS!");
     }
@@ -90,6 +86,7 @@ public class QTE_MoopSweep : MonoBehaviour
     void onQTEFail()
     {
         isQTEActive = false;
+        QTEManager.Instance.EndQTE();
         GameManager.Instance.onQTEFailed();
         Debug.Log("QTE FAIL!");
     }

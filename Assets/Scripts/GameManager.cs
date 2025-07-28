@@ -11,8 +11,10 @@ public class GameManager : MonoBehaviour
     public QTEManager qteManager;
     public int combos;
 
+
     [Header("Status games")]
     public float totalScore;
+    public float totalMultiplier;
     public bool isGameActive;
     public bool isQTETrigger;
 
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
         if (player == null) player = GameObject.FindGameObjectWithTag("Player");
         if (qteManager == null) qteManager = QTEManager.Instance;
     }
+
 
     private void Update()
     {

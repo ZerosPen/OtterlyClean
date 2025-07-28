@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        GameManager.Instance.totalMultiplier = multiplierScore;
         canInteract = false;
 
         Collider2D[] collids = Physics2D.OverlapCircleAll(interact.position, interactRadius);
@@ -99,12 +100,8 @@ public class Player : MonoBehaviour
                         plant.WateringPlant();
                     }
                 }
-
                 break;
             }
-
-
-            //if (canInteract && collid.name != "Plant") Debug.Log($"Press E to Interact {collid.name}");
         }
     }
 

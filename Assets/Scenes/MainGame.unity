@@ -569,6 +569,7 @@ Transform:
   - {fileID: 1631184545}
   - {fileID: 535563615}
   - {fileID: 2045343750}
+  - {fileID: 1169130484}
   m_Father: {fileID: 2117924158}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &155002827
@@ -788,7 +789,7 @@ GameObject:
   - component: {fileID: 265872525}
   m_Layer: 6
   m_Name: Plant
-  m_TagString: Untagged
+  m_TagString: Plant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -919,9 +920,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActive: 0
   isWatered: 0
-  requiredWater: 0
-  currentWater: 0
-  waterSpeed: 0
+  baseScore: 100
 --- !u!1 &370068142
 GameObject:
   m_ObjectHideFlags: 0
@@ -1611,8 +1610,9 @@ MonoBehaviour:
   qtePanel: {fileID: 8695223820861018913, guid: 123ca3ef48500d2448c92824e2883897, type: 3}
   qteKeyPrefab: {fileID: 8695223820861018913, guid: 123ca3ef48500d2448c92824e2883897, type: 3}
   comboSequence: 
+  currIndexKey: 0
   isDone: 0
-  timerPerKey: 2
+  timerPerKey: 5
 --- !u!4 &712649394
 Transform:
   m_ObjectHideFlags: 0
@@ -2405,6 +2405,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   canInteract: 0
+  score: 0
+  multiplierScore: 0
   pickUpWatering: {fileID: 0}
   speedMovement: 5
   directionX: 0
@@ -2433,6 +2435,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   canInteract: 0
+  score: 0
+  multiplierScore: 1
   pickUpWatering: {fileID: 2045343753}
 --- !u!61 &1003301587
 BoxCollider2D:
@@ -2491,9 +2495,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cc0c583dc63b2458f9b0a6a8dcf463, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comboKeys: 00000000000000000000000000000000
-  timerPerKey: 5
   isClean: 0
+  baseScore: 100
+  scoreToAdd: 0
 --- !u!1 &1066846777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2713,6 +2717,37 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!1 &1169130483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1169130484}
+  m_Layer: 0
+  m_Name: WaterCanPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1169130484
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1169130483}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.137, y: 0.862, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 155002826}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1210612165
 GameObject:
   m_ObjectHideFlags: 0
@@ -3264,7 +3299,7 @@ GameObject:
   - component: {fileID: 1631184546}
   m_Layer: 6
   m_Name: Plant
-  m_TagString: Untagged
+  m_TagString: Plant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3298,9 +3333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActive: 0
   isWatered: 0
-  requiredWater: 0
-  currentWater: 0
-  waterSpeed: 0
+  baseScore: 100
 --- !u!61 &1631184547
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3880,6 +3913,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wateringCan: {fileID: 535563614}
   playerHoldPoint: {fileID: 1765241028}
+  WaterCanPoint: {fileID: 1169130484}
   canPickUp: 1
   isPickUp: 0
 --- !u!1 &2057343025

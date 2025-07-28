@@ -36,36 +36,35 @@ public class QTE_MoopSweep : MonoBehaviour
 
         timer -= Time.deltaTime;
 
-        if (Input.anyKeyDown)
-        {
-            if (Input.GetKeyDown(QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]))
-            {
-                Debug.Log("Correct key!");
-                timerPerKey = QTEManager.Instance.timerPerKey;
+        if (Input.anyKeyDown && QTEManager.Instance.currIndexKey < QTEManager.Instance.comboSequence.Count)
+{
+    bool correct = Input.GetKeyDown(QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]);
 
-                scoreToAdd += baseScore;
-            }
-            else
-            {
-                Debug.Log("Wrong key!");
-            }
+    if (correct)
+    {
+        timerPerKey = QTEManager.Instance.timerPerKey;
+        scoreToAdd += baseScore;
+    }
+    else
+    {
+        Debug.Log("Wrong key!");
+    }
 
-            QTEManager.Instance.AdvanceKey();
-            timer = timerPerKey;
+    QTEManager.Instance.AdvanceKey();
+    timer = timerPerKey;
 
-            if (QTEManager.Instance.currIndexKey < QTEManager.Instance.comboSequence.Count)
-            {
-                QTEManager.Instance.ShowCurrentKey();
-            }
-            else
-            {
-                onQTESuccess();
-                return;
-            }
-        }
+    if (QTEManager.Instance.currIndexKey >= QTEManager.Instance.comboSequence.Count)
+    {
+        onQTESuccess();
+    }
+    else
+    {
+        QTEManager.Instance.ShowCurrentKey();
+    }
+}
 
 
-        if (timer <= 0 || QTEManager.Instance.currIndexKey > QTEManager.Instance.comboSequence.Count)
+        if (timer <= 0)
         {
             onQTEFail();
         }

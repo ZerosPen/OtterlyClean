@@ -104,7 +104,7 @@ public class Player : MonoBehaviour
             }
 
 
-            if (canInteract && collid.name != "Plant") Debug.Log($"Press E to Interact {collid.name}");
+            //if (canInteract && collid.name != "Plant") Debug.Log($"Press E to Interact {collid.name}");
         }
     }
 

@@ -118,8 +118,11 @@ public class QTEManager : MonoBehaviour
 
     public void AdvanceKey()
     {
+        if (currIndexKey < comboSequence.Count)
+        {
+            currIndexKey++;
+        }
         timer = timerPerKey;
-        currIndexKey++;
     }
 
     public bool isActive()

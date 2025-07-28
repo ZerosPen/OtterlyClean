@@ -42,7 +42,6 @@ public class PlayerMovement : Player
 
     public void StopMovement()
     {
-        this.enabled = false;
         rb.velocity = Vector2.zero;
     }
 }

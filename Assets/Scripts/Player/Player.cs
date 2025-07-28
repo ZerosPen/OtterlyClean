@@ -12,6 +12,10 @@ public class Player : MonoBehaviour
     public LayerMask triggerBox;
     public bool canInteract;
 
+    [Header("Score")]
+    public float score;
+    public float multiplierScore;
+
     private QTE_MoopSweep QTEMoopSweep;
     private PlayerMovement playerMovement;
     public PickUpWatering pickUpWatering;
@@ -43,20 +47,38 @@ public class Player : MonoBehaviour
             {
                 if (collid.name == "Sweep_Moop")
                 {
-                    if (QTEMoopSweep != null && !QTEMoopSweep.isActive())
+                    if (QTEMoopSweep != null && !QTEMoopSweep.isActive() && !pickUpWatering.isPickUp)
                     {
                         StartCoroutine(SweepMoopQTE());
+                    }
+                    else
+                    {
+                        Debug.Log("Put down the watering can!");
                     }
                 }
 
                 if (collid.name == "Wastafel")
                 {
-                    Debug.Log($"Try Interact with {collid.name}");
+                    if (!pickUpWatering.isPickUp)
+                    {
+                        Debug.Log($"Try Interact with {collid.name}");
+                    }
+                    else
+                    {
+                        Debug.Log("Put down the watering can!");
+                    }
                 }
 
                 if (collid.name == "BoxWaterCan")
                 {
-                    pickUpWatering.PickUpWateringCan();
+                    if (pickUpWatering.canPickUp)
+                    {
+                        pickUpWatering.PickUpWateringCan();
+                    }
+                    else if (!pickUpWatering.canPickUp)
+                    {
+                        pickUpWatering.PutDownWateringCan();
+                    }
                 }
 
                 break;
@@ -64,7 +86,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(WateringButton))
             {
-                if (collid.name == "Plant")
+                if (collid.CompareTag("Plant"))
                 {
                     PlantWater plant = collid.GetComponent<PlantWater>();
                     if (pickUpWatering.canPickUp)
@@ -86,14 +108,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void AddScore(float amountScore)
+    {
+        score += amountScore;
+        Debug.Log($"Amount score {score}");
+    }
 
     IEnumerator SweepMoopQTE()
     {
         QTEMoopSweep.StartQTE();
         playerMovement.StopMovement();
-        
+        playerMovement.enabled = false;
 
-        while (QTEMoopSweep.isActive())
+        yield return new WaitForFixedUpdate();
+
+        while (QTEManager.Instance.isActive())
         {
             yield return null;
         }

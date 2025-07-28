@@ -5,52 +5,66 @@ using UnityEngine;
 public class QTE_MoopSweep : MonoBehaviour
 {
     [Header("QTE details")]
-    public List<KeyCode> comboKeys = new List<KeyCode>();
-    public float timerPerKey;
-    private int currIndexKey;
+    private float timerPerKey;
     private float timer;
     private bool isQTEActive;
     public bool isClean;
+    public float baseScore;
+    [SerializeField]private float scoreToAdd;
 
     public void StartQTE()
     {
-        comboKeys = GeneretadComboKeys(4);
-        currIndexKey = 0;
+        QTEManager.Instance.StartQTE(4);
+        scoreToAdd = 0;
+        timerPerKey = QTEManager.Instance.timerPerKey;
         timer = timerPerKey;
         isQTEActive = true;
         isClean = false;
 
-        QTEManager.Instance.StartQTE(comboKeys);
         Debug.Log("QTE Started! Press the correct keys in order!");
-        foreach (KeyCode key in comboKeys)
+        foreach (KeyCode key in QTEManager.Instance.comboSequence)
         {
             Debug.Log(key);
         }
+
+        QTEManager.Instance.ShowCurrentKey();
     }
 
     private void Update()
     {
         if (!isQTEActive) return;
+        if (!QTEManager.Instance.isActive()) return;
 
         timer -= Time.deltaTime;
 
-        if (Input.GetKeyDown(comboKeys[currIndexKey]))
+        if (Input.anyKeyDown)
         {
-            Debug.Log($"Correct: {comboKeys[currIndexKey]}");
-            currIndexKey++;
+            if (Input.GetKeyDown(QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]))
+            {
+                Debug.Log($"Correct: {QTEManager.Instance.comboSequence[QTEManager.Instance.currIndexKey]}");
+                scoreToAdd += baseScore;
+            }
+            else
+            {
+                Debug.Log("Wrong key!");
+            }
+
+            QTEManager.Instance.AdvanceKey();
             timer = timerPerKey;
 
-            if (currIndexKey >= comboKeys.Count)
+            if (QTEManager.Instance.currIndexKey < QTEManager.Instance.comboSequence.Count)
+            {
+                QTEManager.Instance.ShowCurrentKey();
+            }
+            else
             {
                 onQTESuccess();
+                return;
             }
         }
-        else if (Input.anyKeyDown)
-        {
-            Debug.Log("Wrong Keycode!");
-        }
 
-        if (timer <= 0)
+
+        if (timer <= 0 || QTEManager.Instance.currIndexKey >= QTEManager.Instance.comboSequence.Count)
         {
             onQTEFail();
         }
@@ -60,6 +74,14 @@ public class QTE_MoopSweep : MonoBehaviour
     {
         isClean = true;
         isQTEActive = false;
+
+        Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
+        if (player != null)
+        {
+            scoreToAdd *= player.multiplierScore;
+            player.AddScore(scoreToAdd);
+        }
+
         Debug.Log("QTE SUCCESS!");
     }
 
@@ -67,19 +89,6 @@ public class QTE_MoopSweep : MonoBehaviour
     {
         isQTEActive = false;
         Debug.Log("QTE FAIL!");
-    }
-
-    List<KeyCode> GeneretadComboKeys(int lengt)
-    {
-        KeyCode[] possibleKey = { KeyCode.A, KeyCode.D, KeyCode.S, KeyCode.W };
-        List<KeyCode> combos = new List<KeyCode>();
-
-        for (int i = 0; i < lengt; i++)
-        {
-            combos.Add(possibleKey[Random.Range(0, possibleKey.Length)]);
-        }
-
-        return combos;
     }
 
     public bool isActive()

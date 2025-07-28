@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PlantWater : MonoBehaviour
 {
+    [Header("Status Plant")]
     public bool isActive = false;
     public bool isWatered = false;
-    public float requiredWater;
-    public float currentWater;
-    public float waterSpeed;
+    public float baseScore;
 
     public void WateringPlant()
     {
@@ -33,6 +32,14 @@ public class PlantWater : MonoBehaviour
         Debug.Log($"{gameObject.name} watered!");
         isWatered = true;
         DeactivePlant();
+
+        Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
+        if(player != null)
+        {
+            float scoreToAdd = baseScore * player.multiplierScore;
+            player.AddScore(scoreToAdd);
+        }
+
         WateringManager.instance.NextPlant();
     }
 }

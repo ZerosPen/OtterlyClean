@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class QTEManager : MonoBehaviour
 {
@@ -15,11 +16,11 @@ public class QTEManager : MonoBehaviour
 
     [Header("QTE Settings")]
     public List<KeyCode> comboSequence = new List<KeyCode>();
-    private int currIndexKey;
+    public int currIndexKey;
     private bool QTEActive;
     public bool isDone;
 
-    [SerializeField] private float timerPerKey = 2f;
+    public float timerPerKey;
     private float timer;
     private List<GameObject> activeKeyUIs = new List<GameObject>();
     private List<GameObject> keyUIPool = new List<GameObject>();
@@ -34,9 +35,9 @@ public class QTEManager : MonoBehaviour
         if (player != null) playerTransform = player.transform;
     }
 
-    public void StartQTE(List<KeyCode> sequence)
+    public void StartQTE(int length)
     {
-        comboSequence = sequence;
+        comboSequence = GenerateComboKeys(length);
         currIndexKey = 0;
         QTEActive = true;
         isDone = false;
@@ -60,33 +61,14 @@ public class QTEManager : MonoBehaviour
 
         timer -= Time.deltaTime;
 
-        if (Input.GetKeyDown(comboSequence[currIndexKey]))
-        {
-            Debug.Log("Correct key: " + comboSequence[currIndexKey]);
-            currIndexKey++;
-            timer = timerPerKey;
-
-            if (currIndexKey >= comboSequence.Count)
-            {
-                isDone = true;
-                EndQTE();
-                return;
-            }
-
-            ShowCurrentKey();
-        }
-        else if (Input.anyKeyDown)
-        {
-            Debug.Log("Wrong key!");
-            EndQTE(); // Optionally fail here
-        }
-
         if (timer <= 0)
         {
             Debug.Log("Time out!");
             EndQTE();
+            return;
         }
     }
+
     private GameObject GetOrCreateKeyUI()
     {
         foreach (GameObject obj in keyUIPool)
@@ -100,7 +82,7 @@ public class QTEManager : MonoBehaviour
         return newKeyUI;
     }
 
-    void ShowCurrentKey()
+    public void ShowCurrentKey()
     {
         if (currIndexKey < comboSequence.Count)
         {
@@ -123,6 +105,21 @@ public class QTEManager : MonoBehaviour
         activeKeyUIs.Clear();
     }
 
+    public List<KeyCode> GenerateComboKeys(int length)
+    {
+        KeyCode[] possibleKeys = { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.W };
+        List<KeyCode> combo = new List<KeyCode>();
+        for (int i = 0; i < length; i++)
+        {
+            combo.Add(possibleKeys[Random.Range(0, possibleKeys.Length)]);
+        }
+        return combo;
+    }
+
+    public void AdvanceKey()
+    {
+        currIndexKey++;
+    }
 
     public bool isActive()
     {

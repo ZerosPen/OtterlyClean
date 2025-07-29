@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        SoundManager.instance.PlaySound2D("Wind");
         if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
         {
             dialogueTriggers[0].TriggerDialogue();

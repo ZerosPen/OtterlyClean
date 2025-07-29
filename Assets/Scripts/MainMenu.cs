@@ -15,11 +15,13 @@ public class MainMenu : MonoBehaviour
     private void Start()
     {
         loadSettings();
+        MusicManager.instance.PlayMusic("BGM");
     }
 
     public void Play()
     {
         SceneManager.LoadScene("MainGame");
+        MusicManager.instance.PlayMusic("BGM2");
     }
 
     public void Exit()

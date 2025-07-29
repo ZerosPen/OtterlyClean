@@ -1,11 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pausePanel;
     private bool pasueIsOpen = false;
+    public AudioMixer audioMixer;
+
+    public Slider musicSlider;
+    public Slider soundSlider;
 
     // Update is called once per frame
     void Update()
@@ -38,6 +44,25 @@ public class PauseMenu : MonoBehaviour
         pausePanel.SetActive(false);
         DialogueManager.instance.GameContinue();
         pasueIsOpen = false;
+    }
+
+    public void UpdateMusicVolume(float volume)
+    {
+        audioMixer.SetFloat("MusicVolume", volume);
+    }
+
+    public void UpdateSoundVolume(float volume)
+    {
+        audioMixer.SetFloat("SfxVolume", volume);
+    }
+
+    public void SaveSettings()
+    {
+        audioMixer.GetFloat("MusicVolume", out float musicVolume);
+        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+
+        audioMixer.GetFloat("SfxVolume", out float soundVolume);
+        PlayerPrefs.SetFloat("SfxVolume", soundVolume);
     }
 
     IEnumerator DelayPause()

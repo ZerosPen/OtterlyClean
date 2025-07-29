@@ -24,7 +24,6 @@ public class DialogueManager : MonoBehaviour
         else
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         lines = new Queue<DialogueLine>();
@@ -34,8 +33,7 @@ public class DialogueManager : MonoBehaviour
     {
         isDialogueActive = true;
 
-        gameObject.SetActive(true);
-        //animator.Play("show");
+        animator.Play("show");
 
         lines.Clear();
 
@@ -75,10 +73,19 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    public void GamePause()
+    {
+        animator.Play("hide");
+    }
+
+    public void GameContinue()
+    {
+        animator.Play("show");
+    }
+
     void EndDialogue()
     {
         isDialogueActive = false;
-        gameObject.SetActive(false);
-        //animator.Play("hide");
+        animator.Play("hide");
     }
 }

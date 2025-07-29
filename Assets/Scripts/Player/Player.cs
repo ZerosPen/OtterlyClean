@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -11,6 +12,10 @@ public class Player : MonoBehaviour
     public float interactRadius;
     public LayerMask triggerBox;
     public bool canInteract;
+    public Animator animator;
+    private float dirX;
+    private float dirY;
+    private bool isFacingRight = true;
 
     [Header("Score")]
     public float score;
@@ -28,6 +33,32 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        dirX = playerMovement.directionX;
+        dirY = playerMovement.directionY;
+
+        if (dirX == 0 && dirY == 0)
+        {
+            animator.Play("idle");
+        }
+
+        if (dirY <= -1)
+        {
+            animator.Play("Walk-Down");
+        }
+        else if (dirY >= 1)
+        {
+            animator.Play("Walk-Up");
+        }
+
+        if (dirX > 0 && !isFacingRight)
+        {
+            FlipSprite();
+        }
+        else if (dirX < 0 && isFacingRight)
+        {
+            FlipSprite();
+        }
+
         GameManager.Instance.totalMultiplier = multiplierScore;
         canInteract = false;
 
@@ -103,6 +134,15 @@ public class Player : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void FlipSprite()
+    {
+        isFacingRight = !isFacingRight;
+        animator.Play("Right");
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 
     public void AddScore(float amountScore)

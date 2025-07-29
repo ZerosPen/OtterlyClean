@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [Header("References")]
     public GameObject player;
     public QTEManager qteManager;
+    public DialogueTrigger[] dialogueTriggers;
     public int combos;
 
 
@@ -17,6 +18,9 @@ public class GameManager : MonoBehaviour
     public float totalMultiplier;
     public bool isGameActive;
     public bool isQTETrigger;
+
+    private bool hasPlayedIntro = false;
+    private bool hasPlayedEndDay = false;
 
     private void Awake()
     {
@@ -31,14 +35,21 @@ public class GameManager : MonoBehaviour
         if (qteManager == null) qteManager = QTEManager.Instance;
     }
 
+    private void Start()
+    {
+        if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
+        {
+            dialogueTriggers[0].TriggerDialogue();
+            hasPlayedIntro = true;
+        }
+    }
 
     private void Update()
     {
-        if (totalScore >= 900)
+        if (totalScore >= 500 && !hasPlayedEndDay)
         {
-            Debug.Log("The misson for today is done!");
-            Debug.Log("You can go home!");
-            Debug.Log("Press F to end the day!");
+            dialogueTriggers[1].TriggerDialogue();
+            hasPlayedEndDay = true;
         }
     }
 

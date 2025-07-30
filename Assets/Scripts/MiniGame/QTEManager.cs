@@ -11,13 +11,13 @@ public class QTEManager : MonoBehaviour
     private TextMeshProUGUI keyDisplay;
     public GameObject qtePanel;
     public GameObject qteKeyPrefab;
-    private Canvas canvas;
+    [SerializeField]private Canvas canvas;
     private Transform playerTransform;
 
     [Header("QTE Settings")]
     public List<KeyCode> comboSequence = new List<KeyCode>();
     public int currIndexKey;
-    private bool QTEActive;
+    [SerializeField]private bool QTEActive;
     public bool isDone;
     public QTE_MoopSweep moopSwep;
 
@@ -36,13 +36,23 @@ public class QTEManager : MonoBehaviour
         }
 
 
-        canvas = FindObjectOfType<Canvas>();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
     }
 
     public void StartQTE(int length)
     {
+        if (canvas == null)
+        {
+            canvas = FindObjectOfType<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogWarning("Canvas not found. QTE UI won't display.");
+                return;
+            }
+        }
+
+        QTE_MoopSweep.Instance.StartQTE();
         comboSequence = GenerateComboKeys(length);
         currIndexKey = 0;
         QTEActive = true;

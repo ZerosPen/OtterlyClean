@@ -31,13 +31,16 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
 
-        if (player == null) player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) 
+        { 
+            player = GameObject.FindGameObjectWithTag("Player"); 
+        }
+
         if (qteManager == null) qteManager = QTEManager.Instance;
     }
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
         SoundManager.instance.PlaySound2D("Wind");
         if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
         {
@@ -58,14 +61,7 @@ public class GameManager : MonoBehaviour
     public void StartQTE()
     {
         isQTETrigger = true;
-
         qteManager.StartQTE(combos);
-
-        QTE_MoopSweep moopSweep = player.GetComponent<QTE_MoopSweep>();
-        if(moopSweep != null)
-        {
-            moopSweep.StartQTE();
-        }
     }
 
     public void onQTESucces()

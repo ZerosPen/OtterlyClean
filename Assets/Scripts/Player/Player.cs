@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     private PlayerMovement playerMovement;
     public PickUpWatering pickUpWatering;
 
-    private void Start()
+    private void Awake()
     {
         QTEMoopSweep = GetComponent<QTE_MoopSweep>();
         playerMovement = GetComponent<PlayerMovement>();
@@ -33,6 +33,12 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if(playerMovement == null)
+        {
+            Debug.LogWarning("PlayerMovement is NULL");
+            return;
+        }
+
         dirX = playerMovement.directionX;
         dirY = playerMovement.directionY;
 
@@ -79,13 +85,24 @@ public class Player : MonoBehaviour
             {
                 if (collid.name == "Sweep_Moop")
                 {
-                    if (QTEMoopSweep != null && !QTEMoopSweep.isActive() && !pickUpWatering.isPickUp)
+                    if (QTEMoopSweep != null && pickUpWatering != null && !QTEMoopSweep.isActive() && !pickUpWatering.isPickUp)
                     {
                         StartCoroutine(SweepMoopQTE());
                     }
                     else
                     {
-                        Debug.Log("Put down the watering can!");
+                        if (QTEMoopSweep == null)
+                        {
+                            Debug.LogWarning("QTEMMoopSweep is missing");
+                        }
+                        else if (pickUpWatering == null)
+                        {
+                            Debug.LogWarning("pickUpWatering is missing");
+                        }
+                        else
+                        {
+                            Debug.Log("Put down the watering can or check references!");
+                        }
                     }
                 }
 

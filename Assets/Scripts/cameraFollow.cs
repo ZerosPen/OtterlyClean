@@ -4,14 +4,38 @@ using UnityEngine;
 
 public class cameraFollow : MonoBehaviour
 {
-    [SerializeField]
-    private float speedFollow = 2f;
+    [SerializeField] private float speedFollow = 2f;
     [SerializeField] private Transform target;
 
-    // Update is called once per frame
+    public static cameraFollow Instance;
+
+    void Awake()
+    {
+        // Singleton pattern
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
+        AudioListener listener = GetComponent<AudioListener>();
+        if (listener != null && FindObjectsOfType<AudioListener>().Length > 1)
+        {
+            Debug.LogWarning("Multiple AudioListeners detected. Removing extra from: " + gameObject.name);
+            Destroy(listener);
+        }
+    }
+
     void Update()
     {
-        Vector3 newPost = new Vector3(target.position.x, target.position.y, -10f);
-        transform.position = Vector3.Slerp(transform.position, newPost, speedFollow * Time.deltaTime);
+        if (target == null) return;
+
+        Vector3 newPos = new Vector3(target.position.x, target.position.y, -10f);
+        transform.position = Vector3.Slerp(transform.position, newPos, speedFollow * Time.deltaTime);
     }
 }

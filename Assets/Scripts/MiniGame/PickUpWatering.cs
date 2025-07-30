@@ -10,7 +10,7 @@ public class PickUpWatering : MonoBehaviour
     public Transform WaterCanPoint;
     public bool canPickUp = true;
     public bool isPickUp;
-    
+
     public void PickUpWateringCan()
     {
         if (canPickUp && wateringCan != null && playerHoldPoint != null)

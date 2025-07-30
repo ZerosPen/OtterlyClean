@@ -7,10 +7,21 @@ public class QTE_MoopSweep : MonoBehaviour
     [Header("QTE details")]
     private float timerPerKey;
     private float timer;
-    [SerializeField]private bool isQTEActive;
+    public bool isQTEActive;
     public bool isClean;
     public float baseScore;
     [SerializeField]private float scoreToAdd;
+
+    public static QTE_MoopSweep Instance;
+    void Awake()
+    {
+        if (Instance != null) Destroy(gameObject);
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 
     public void StartQTE()
     {
@@ -18,6 +29,7 @@ public class QTE_MoopSweep : MonoBehaviour
         timerPerKey = QTEManager.Instance.timerPerKey;
         timer = timerPerKey;
         isQTEActive = true;
+        Debug.Log($"isQTEActive set to {isQTEActive}");
         isClean = false;
 
         Debug.Log("QTE Started! Press the correct keys in order!");
@@ -25,12 +37,14 @@ public class QTE_MoopSweep : MonoBehaviour
         {
             Debug.Log(key);
         }
-
+        Debug.Log($"StartQTE() called on {this.gameObject.name} [{GetInstanceID()}]");
         QTEManager.Instance.ShowCurrentKey();
     }
 
     private void Update()
     {
+        Debug.Log($"Update() on {this.gameObject.name} [{GetInstanceID()}] | isQTEActive: {isQTEActive}");
+
         if (!isQTEActive) return;
         if (!QTEManager.Instance.isActive()) return;
 

@@ -49,6 +49,7 @@ public class PauseMenu : MonoBehaviour
 
     public void changetoMainMenu()
     {
+        pausePanel.SetActive(false);
         SceneManager.LoadScene("MainMenu");
     }
     public void UpdateMusicVolume(float volume)

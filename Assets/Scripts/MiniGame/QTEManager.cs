@@ -19,6 +19,7 @@ public class QTEManager : MonoBehaviour
     public int currIndexKey;
     private bool QTEActive;
     public bool isDone;
+    public QTE_MoopSweep moopSwep;
 
     public float timerPerKey;
     [SerializeField]private float timer;
@@ -27,8 +28,13 @@ public class QTEManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance != null) Destroy(gameObject);
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+
 
         canvas = FindObjectOfType<Canvas>();
         GameObject player = GameObject.FindGameObjectWithTag("Player");

@@ -21,9 +21,24 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    
+    public void ReassignUIReferences()
+    {
+        valueScore = GameObject.Find("scoreValue")?.GetComponent<TextMeshProUGUI>();
+        valueMultiplier = GameObject.Find("multiplierValue")?.GetComponent<TextMeshProUGUI>();
+    }
+
+    private void Start()
+    {
+        ReassignUIReferences();
+    }
+
     private void Update()
     {
-        valueScore.text = $"{GameManager.Instance.totalScore:F0}";
-        valueMultiplier.text = $"X {GameManager.Instance.totalMultiplier:F1}";
+        if (valueScore != null)
+            valueScore.text = $"{GameManager.Instance.totalScore:F0}";
+
+        if (valueMultiplier != null)
+            valueMultiplier.text = $"X {GameManager.Instance.totalMultiplier:F1}";
     }
 }

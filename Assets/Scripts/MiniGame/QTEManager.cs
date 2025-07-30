@@ -9,20 +9,20 @@ public class QTEManager : MonoBehaviour
 
     [Header("UI Settings")]
     private TextMeshProUGUI keyDisplay;
-    public GameObject qtePanel;
-    public GameObject qteKeyPrefab;
-    [SerializeField]private Canvas canvas;
+    [SerializeField] private GameObject qtePanel;
+    [SerializeField] private GameObject qteKeyPrefab;
+    [SerializeField] private Canvas canvas;
     private Transform playerTransform;
 
     [Header("QTE Settings")]
     public List<KeyCode> comboSequence = new List<KeyCode>();
     public int currIndexKey;
-    [SerializeField]private bool QTEActive;
-    public bool isDone;
+    [SerializeField] private bool QTEActive;
+    [SerializeField] private bool isDone;
     public QTE_MoopSweep moopSwep;
 
     public float timerPerKey;
-    [SerializeField]private float timer;
+    [SerializeField] private float timer;
     private List<GameObject> activeKeyUIs = new List<GameObject>();
     private List<GameObject> keyUIPool = new List<GameObject>();
 

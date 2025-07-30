@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject pausePanel;
+    [SerializeField] private GameObject pausePanel;
     private bool pasueIsOpen = false;
     public AudioMixer audioMixer;
 
-    public Slider musicSlider;
-    public Slider soundSlider;
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider soundSlider;
 
     // Update is called once per frame
     void Update()
@@ -50,6 +50,8 @@ public class PauseMenu : MonoBehaviour
     public void changetoMainMenu()
     {
         pausePanel.SetActive(false);
+        GameManager.Instance.GameOff();
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
     public void UpdateMusicVolume(float volume)

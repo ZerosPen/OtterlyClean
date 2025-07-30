@@ -7,17 +7,20 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("References")]
-    public GameObject player;
-    public QTEManager qteManager;
-    public DialogueTrigger[] dialogueTriggers;
-    public int combos;
+    [SerializeField] private GameObject player;
+    [SerializeField] private QTEManager qteManager;
+    [SerializeField] private DialogueTrigger[] dialogueTriggers;
+    [SerializeField] private int combos;
 
 
     [Header("Status games")]
-    public float totalScore;
-    public float totalMultiplier;
-    public bool isGameActive;
-    public bool isQTETrigger;
+    [SerializeField] private float totalScore;
+    [SerializeField] private float totalMultiplier;
+    [SerializeField] private bool isGameActive;
+    [SerializeField] private bool isQTETrigger;
+    public bool isGameOn;
+    public float SetValueTotalScoreUI;
+    public float SetValueMultiplierScoreUI;
 
     private bool hasPlayedIntro = false;
     private bool hasPlayedEndDay = false;
@@ -42,6 +45,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SoundManager.instance.PlaySound2D("Wind");
+        
+        if (isGameActive == false)
+        {
+            GameOn();
+        }
+
         if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
         {
             dialogueTriggers[0].TriggerDialogue();
@@ -56,6 +65,30 @@ public class GameManager : MonoBehaviour
             dialogueTriggers[1].TriggerDialogue();
             hasPlayedEndDay = true;
         }
+        SetTotalScoreForUI();
+        SetMultiplierScoreForUI();
+    }
+
+    public void SetTotalScoreForUI()
+    {
+        SetValueTotalScoreUI = totalScore;
+        UIManager.Instance.UpdateScoreUI(SetValueTotalScoreUI);
+    }
+
+    public void SetTotalScore(float score)
+    {
+        totalScore += score;
+    }
+
+    public void SetMultiplierScoreForUI()
+    {
+        SetValueMultiplierScoreUI = totalMultiplier;
+        UIManager.Instance.UpdateMultiplierUI(SetValueMultiplierScoreUI);
+    }
+
+    public void SetMultiplierScore(float Multiplier)
+    {
+        totalMultiplier += Multiplier;
     }
 
     public void StartQTE()
@@ -74,5 +107,33 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("QTE Failed!");
         isQTETrigger = false;
+    }
+
+    public void GameOn()
+    {
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        player.SetActive(true);
+        isGameActive = true;
+    }
+
+    public void GameOff()
+    {
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        player.SetActive(false);
+        isGameActive = false;
+    }
+
+
+    public bool isGameon()
+    {
+        return isGameActive;
     }
 }

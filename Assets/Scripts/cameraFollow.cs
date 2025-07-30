@@ -8,26 +8,13 @@ public class cameraFollow : MonoBehaviour
     [SerializeField] private Transform target;
 
     public static cameraFollow Instance;
-
     void Awake()
     {
-        // Singleton pattern
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null) Destroy(gameObject);
         else
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-        }
-
-        AudioListener listener = GetComponent<AudioListener>();
-        if (listener != null && FindObjectsOfType<AudioListener>().Length > 1)
-        {
-            Debug.LogWarning("Multiple AudioListeners detected. Removing extra from: " + gameObject.name);
-            Destroy(listener);
         }
     }
 

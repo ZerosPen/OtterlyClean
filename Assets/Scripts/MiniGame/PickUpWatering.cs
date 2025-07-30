@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class PickUpWatering : MonoBehaviour
 {
-    public GameObject wateringCan;        
-    public Transform playerHoldPoint;
-    public Transform WaterCanPoint;
+    [SerializeField] private GameObject wateringCan;        
+    [SerializeField] private Transform playerHoldPoint;
+    [SerializeField] private Transform WaterCanPoint;
     public bool canPickUp = true;
     public bool isPickUp;
+
+    public static PickUpWatering Instance;
 
     public void PickUpWateringCan()
     {

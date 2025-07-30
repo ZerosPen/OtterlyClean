@@ -8,8 +8,8 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("Referece")]
-    public TextMeshProUGUI valueScore;
-    public TextMeshProUGUI valueMultiplier;
+    [SerializeField] private TextMeshProUGUI valueScore;
+    [SerializeField] private TextMeshProUGUI valueMultiplier;
 
     private void Awake()
     {
@@ -21,24 +21,13 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    
-    public void ReassignUIReferences()
+    public void UpdateScoreUI(float score)
     {
-        valueScore = GameObject.Find("scoreValue")?.GetComponent<TextMeshProUGUI>();
-        valueMultiplier = GameObject.Find("multiplierValue")?.GetComponent<TextMeshProUGUI>();
+        valueScore.text = score.ToString();
     }
 
-    private void Start()
+    public void UpdateMultiplierUI(float multiplier)
     {
-        ReassignUIReferences();
-    }
-
-    private void Update()
-    {
-        if (valueScore != null)
-            valueScore.text = $"{GameManager.Instance.totalScore:F0}";
-
-        if (valueMultiplier != null)
-            valueMultiplier.text = $"X {GameManager.Instance.totalMultiplier:F1}";
+        valueMultiplier.text = multiplier.ToString();
     }
 }

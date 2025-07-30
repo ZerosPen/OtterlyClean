@@ -8,11 +8,11 @@ public class Player : MonoBehaviour
     [Header("Status")]
     public KeyCode interacButton = KeyCode.E;
     public KeyCode WateringButton = KeyCode.F;
-    public Transform interact;
-    public float interactRadius;
-    public LayerMask triggerBox;
-    public bool canInteract;
-    public Animator animator;
+    [SerializeField] private Transform interact;
+    [SerializeField] private float interactRadius;
+    [SerializeField] private LayerMask triggerBox;
+    [SerializeField] private bool canInteract;
+    [SerializeField] private Animator animator;
     private float dirX;
     private float dirY;
     private bool isFacingRight = true;
@@ -23,12 +23,24 @@ public class Player : MonoBehaviour
 
     private QTE_MoopSweep QTEMoopSweep;
     private PlayerMovement playerMovement;
-    public PickUpWatering pickUpWatering;
+    [SerializeField] private PickUpWatering pickUpWatering;
 
     private void Awake()
     {
         QTEMoopSweep = GetComponent<QTE_MoopSweep>();
         playerMovement = GetComponent<PlayerMovement>();
+    }
+
+    private void Start()
+    {
+        if (pickUpWatering == null)
+        {
+            pickUpWatering = FindObjectOfType<PickUpWatering>();
+            if (pickUpWatering == null)
+            {
+                Debug.LogWarning("PickUpWatering masih NULL setelah scene load!");
+            }
+        }
     }
 
     private void Update()
@@ -65,7 +77,6 @@ public class Player : MonoBehaviour
             FlipSprite();
         }
 
-        GameManager.Instance.totalMultiplier = multiplierScore;
         canInteract = false;
 
         Collider2D[] collids = Physics2D.OverlapCircleAll(interact.position, interactRadius);
@@ -83,9 +94,9 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(interacButton))
             {
-                if (collid.name == "Sweep_Moop")
+                if (collid.name == "Sweep_Moop" && canInteract)
                 {
-                    if (QTEMoopSweep != null && pickUpWatering != null && !QTEMoopSweep.isActive() && !pickUpWatering.isPickUp)
+                    if (QTEMoopSweep != null && !QTEMoopSweep.isActive())
                     {
                         StartCoroutine(SweepMoopQTE());
                     }
@@ -106,7 +117,7 @@ public class Player : MonoBehaviour
                     }
                 }
 
-                if (collid.name == "Wastafel")
+                if (collid.name == "Wastafel" && canInteract)
                 {
                     if (!pickUpWatering.isPickUp)
                     {
@@ -118,7 +129,7 @@ public class Player : MonoBehaviour
                     }
                 }
 
-                if (collid.name == "BoxWaterCan")
+                if (collid.name == "BoxWaterCan" && canInteract)
                 {
                     if (pickUpWatering.canPickUp)
                     {
@@ -135,7 +146,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(WateringButton))
             {
-                if (collid.CompareTag("Plant"))
+                if (collid.CompareTag("Plant") && canInteract)
                 {
                     PlantWater plant = collid.GetComponent<PlantWater>();
                     if (pickUpWatering.canPickUp)
@@ -165,7 +176,7 @@ public class Player : MonoBehaviour
     public void AddScore(float amountScore)
     {
         score += amountScore;
-        GameManager.Instance.totalScore = score;
+        GameManager.Instance.SetTotalScore(score) ;
         Debug.Log($"Amount score {score}");
     }
 
@@ -187,5 +198,14 @@ public class Player : MonoBehaviour
             Debug.Log("Sweep is done!");
         }
         playerMovement.enabled = true;
+    }
+    public void showPlayer()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    public void hidePlayer()
+    {
+        this.gameObject.SetActive(false);
     }
 }

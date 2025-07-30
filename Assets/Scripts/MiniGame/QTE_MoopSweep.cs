@@ -7,7 +7,7 @@ public class QTE_MoopSweep : MonoBehaviour
     [Header("QTE details")]
     private float timerPerKey;
     private float timer;
-    public bool isQTEActive;
+    [SerializeField] private bool isQTEActive;
     public bool isClean;
     public float baseScore;
     [SerializeField]private float scoreToAdd;
@@ -37,13 +37,11 @@ public class QTE_MoopSweep : MonoBehaviour
         {
             Debug.Log(key);
         }
-        Debug.Log($"StartQTE() called on {this.gameObject.name} [{GetInstanceID()}]");
         QTEManager.Instance.ShowCurrentKey();
     }
 
     private void Update()
     {
-        Debug.Log($"Update() on {this.gameObject.name} [{GetInstanceID()}] | isQTEActive: {isQTEActive}");
 
         if (!isQTEActive) return;
         if (!QTEManager.Instance.isActive()) return;

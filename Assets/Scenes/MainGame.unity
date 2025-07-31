@@ -8695,7 +8695,7 @@ GameObject:
   - component: {fileID: 1066846782}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: GameCanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9818,9 +9818,10 @@ MonoBehaviour:
   totalMultiplier: 0
   isGameActive: 0
   isQTETrigger: 0
-  isGameOn: 0
   SetValueTotalScoreUI: 0
   SetValueMultiplierScoreUI: 0
+  hasPlayedIntro: 0
+  hasPlayedEndDay: 0
 --- !u!4 &1444658852
 Transform:
   m_ObjectHideFlags: 0

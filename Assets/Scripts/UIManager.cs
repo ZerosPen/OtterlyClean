@@ -11,18 +11,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI valueScore;
     [SerializeField] private TextMeshProUGUI valueMultiplier;
 
-    private void Awake()
+
+    private void Start()
     {
-        if (Instance != null) Destroy(gameObject);
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        valueScore.text = GameManager.Instance.SetValueTotalScoreUI.ToString();
+        valueMultiplier.text = GameManager.Instance.SetValueMultiplierScoreUI.ToString();
+
     }
 
     public void UpdateScoreUI(float score)
     {
+        
         valueScore.text = score.ToString();
     }
 

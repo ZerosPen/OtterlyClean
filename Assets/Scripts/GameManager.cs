@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private QTEManager qteManager;
     [SerializeField] private DialogueTrigger[] dialogueTriggers;
     [SerializeField] private int combos;
+    private UIManager uiManager;
 
 
     [Header("Status games")]
@@ -21,8 +22,8 @@ public class GameManager : MonoBehaviour
     public float SetValueTotalScoreUI;
     public float SetValueMultiplierScoreUI;
 
-    private bool hasPlayedIntro = false;
-    private bool hasPlayedEndDay = false;
+    [SerializeField] private bool hasPlayedIntro = false;
+    [SerializeField] private bool hasPlayedEndDay = false;
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (qteManager == null) qteManager = QTEManager.Instance;
+        uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
     }
 
     private void Start()
@@ -50,10 +52,14 @@ public class GameManager : MonoBehaviour
             dialogueTriggers[0].TriggerDialogue();
             hasPlayedIntro = true;
         }
+
+        totalScore = 0;
+        totalMultiplier = 1;
     }
 
     private void Update()
     {
+
         if (totalScore >= 500 && !hasPlayedEndDay)
         {
             dialogueTriggers[1].TriggerDialogue();
@@ -68,31 +74,21 @@ public class GameManager : MonoBehaviour
         {
             GameOn();
         }
-
-        SetTotalScoreForUI();
-        SetMultiplierScoreForUI();
-    }
-
-    public void SetTotalScoreForUI()
-    {
-        SetValueTotalScoreUI = totalScore;
-        UIManager.Instance.UpdateScoreUI(SetValueTotalScoreUI);
     }
 
     public void SetTotalScore(float score)
     {
         totalScore += score;
+        SetValueTotalScoreUI = totalScore;
+        Debug.Log("Updating score UI: " + SetValueTotalScoreUI);
+        uiManager.UpdateScoreUI(SetValueTotalScoreUI);
     }
 
-    public void SetMultiplierScoreForUI()
+    public void SetMultiplierScore(float multiplier)
     {
+        totalMultiplier += multiplier;
         SetValueMultiplierScoreUI = totalMultiplier;
-        UIManager.Instance.UpdateMultiplierUI(SetValueMultiplierScoreUI);
-    }
-
-    public void SetMultiplierScore(float Multiplier)
-    {
-        totalMultiplier += Multiplier;
+        uiManager.UpdateMultiplierUI(SetValueMultiplierScoreUI);
     }
 
     public void StartQTE()
@@ -123,6 +119,8 @@ public class GameManager : MonoBehaviour
     {
 
         player.SetActive(false);
+        hasPlayedIntro = false;
+        hasPlayedEndDay = false;
         LevelManager.Instance.isGameActive = false;
     }
 

@@ -44,11 +44,14 @@ public class QTEManager : MonoBehaviour
     {
         if (canvas == null)
         {
-            canvas = FindObjectOfType<Canvas>();
-            if (canvas == null)
+            GameObject canvasObj = GameObject.FindGameObjectWithTag("GameCanvas");
+            if (canvasObj != null)
             {
-                Debug.LogWarning("Canvas not found. QTE UI won't display.");
-                return;
+                canvas = canvasObj.GetComponent<Canvas>();
+            }
+            else
+            {
+                Debug.LogWarning("Tagged Canvas not found.");
             }
         }
 
@@ -87,12 +90,6 @@ public class QTEManager : MonoBehaviour
 
     private GameObject GetOrCreateKeyUI()
     {
-        foreach (GameObject obj in keyUIPool)
-        {
-            if (!obj.activeInHierarchy)
-                return obj;
-        }
-
         GameObject newKeyUI = Instantiate(qteKeyPrefab, canvas.transform);
         keyUIPool.Add(newKeyUI);
         return newKeyUI;

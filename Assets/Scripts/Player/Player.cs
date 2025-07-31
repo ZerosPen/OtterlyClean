@@ -34,6 +34,12 @@ public class Player : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        score = 0f;
+        multiplierScore = 1f;
+    }
+
     private void Update()
     {
         if(playerMovement == null)

@@ -75,7 +75,7 @@ public class PauseMenu : MonoBehaviour
 
     IEnumerator DelayPause()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.1f);
         Time.timeScale = 0f;
     }
 }

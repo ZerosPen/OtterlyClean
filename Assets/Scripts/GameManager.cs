@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float totalMultiplier;
     [SerializeField] private bool isGameActive;
     [SerializeField] private bool isQTETrigger;
-    public bool isGameOn;
     public float SetValueTotalScoreUI;
     public float SetValueMultiplierScoreUI;
 
@@ -45,11 +44,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SoundManager.instance.PlaySound2D("Wind");
-        
-        if (isGameActive == false)
-        {
-            GameOn();
-        }
 
         if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
         {
@@ -65,6 +59,16 @@ public class GameManager : MonoBehaviour
             dialogueTriggers[1].TriggerDialogue();
             hasPlayedEndDay = true;
         }
+
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+        if (LevelManager.Instance.isGameActive)
+        {
+            GameOn();
+        }
+
         SetTotalScoreForUI();
         SetMultiplierScoreForUI();
     }
@@ -111,24 +115,15 @@ public class GameManager : MonoBehaviour
 
     public void GameOn()
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
-
+        Debug.Log("Beem call by main menu");
         player.SetActive(true);
-        isGameActive = true;
     }
 
     public void GameOff()
     {
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-        }
 
         player.SetActive(false);
-        isGameActive = false;
+        LevelManager.Instance.isGameActive = false;
     }
 
 

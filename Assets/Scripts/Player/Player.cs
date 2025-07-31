@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask triggerBox;
     [SerializeField] private bool canInteract;
     [SerializeField] private Animator animator;
+    private bool canPickUPcan = true;
     private float dirX;
     private float dirY;
     private bool isFacingRight = true;
@@ -29,18 +30,8 @@ public class Player : MonoBehaviour
     {
         QTEMoopSweep = GetComponent<QTE_MoopSweep>();
         playerMovement = GetComponent<PlayerMovement>();
-    }
 
-    private void Start()
-    {
-        if (pickUpWatering == null)
-        {
-            pickUpWatering = FindObjectOfType<PickUpWatering>();
-            if (pickUpWatering == null)
-            {
-                Debug.LogWarning("PickUpWatering masih NULL setelah scene load!");
-            }
-        }
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -50,6 +41,7 @@ public class Player : MonoBehaviour
             Debug.LogWarning("PlayerMovement is NULL");
             return;
         }
+        FindpickUpWatering();
 
         dirX = playerMovement.directionX;
         dirY = playerMovement.directionY;
@@ -164,6 +156,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    void FindpickUpWatering()
+    {
+        if (pickUpWatering == null)
+        {
+            pickUpWatering = FindObjectOfType<PickUpWatering>();
+            if (pickUpWatering == null)
+            {
+                Debug.LogWarning("PickUpWatering masih NULL setelah scene load!");
+            }
+        }
+    }
+
     public void FlipSprite()
     {
         isFacingRight = !isFacingRight;
@@ -207,5 +211,11 @@ public class Player : MonoBehaviour
     public void hidePlayer()
     {
         this.gameObject.SetActive(false);
+    }
+
+    IEnumerator WaitAndFindpickUpWatering()
+    {
+        yield return new WaitForSeconds(0.1f);
+        FindpickUpWatering();
     }
 }

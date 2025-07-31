@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     public AudioMixer audioMixer;
+    public GameObject MenuButton;
 
     public Slider musicSlider;
     public Slider soundSlider;
@@ -15,12 +16,13 @@ public class MainMenu : MonoBehaviour
     private void Start()
     {
         loadSettings();
+        MenuButton.SetActive(true);
         MusicManager.instance.PlayMusic("BGM");
     }
 
     public void Play()
     {
-        SceneManager.LoadScene("MainGame");
+        LevelManager.Instance.LoadScene("MainGame", "CrossFade");
         MusicManager.instance.PlayMusic("BGM2");
     }
 
@@ -53,5 +55,4 @@ public class MainMenu : MonoBehaviour
         musicSlider.value = PlayerPrefs.GetFloat("MusicVolume");
         soundSlider.value = PlayerPrefs.GetFloat("SfxVolume");
     }
-
 }

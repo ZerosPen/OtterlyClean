@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask triggerBox;
     [SerializeField] private bool canInteract;
     [SerializeField] private Animator animator;
+    public bool isThisMoop;
+    public bool isThisSweep;
     private bool canPickUPcan = true;
     private float dirX;
     private float dirY;
@@ -22,13 +24,15 @@ public class Player : MonoBehaviour
     public float score;
     public float multiplierScore;
 
-    private QTE_MoopSweep QTEMoopSweep;
+    private Sweep qteSweep;
+    private Moop qteMoop;
     private PlayerMovement playerMovement;
     [SerializeField] private PickUpWatering pickUpWatering;
 
     private void Awake()
     {
-        QTEMoopSweep = GetComponent<QTE_MoopSweep>();
+        qteSweep = GetComponent<Sweep>();
+        qteMoop = GetComponent<Moop>();
         playerMovement = GetComponent<PlayerMovement>();
 
         DontDestroyOnLoad(gameObject);
@@ -38,6 +42,7 @@ public class Player : MonoBehaviour
     {
         score = 0f;
         multiplierScore = 1f;
+        isThisMoop = isThisSweep = false;
     }
 
     private void Update()
@@ -76,6 +81,9 @@ public class Player : MonoBehaviour
         }
 
         canInteract = false;
+        GameManager.Instance.isSweep = isThisSweep = false;
+        GameManager.Instance.isMoop = isThisMoop = false;
+        isThisMoop = false;
 
         Collider2D[] collids = Physics2D.OverlapCircleAll(interact.position, interactRadius);
 
@@ -89,20 +97,21 @@ public class Player : MonoBehaviour
             }
 
             canInteract = true;
-
-            if (Input.GetKeyDown(interacButton))
+            if (collid.name == "Sweep")
             {
-                if (collid.name == "Sweep_Moop" && canInteract)
+                isThisSweep = true;
+                GameManager.Instance.isSweep = isThisSweep;
+                if (Input.GetKeyDown(interacButton) && canInteract && isThisSweep)
                 {
-                    if (QTEMoopSweep != null && !QTEMoopSweep.isActive())
-                    {
+                    if (qteSweep != null && !qteSweep.isActive())
+                    { 
                         StartCoroutine(SweepMoopQTE());
                     }
                     else
                     {
-                        if (QTEMoopSweep == null)
+                        if (qteSweep == null)
                         {
-                            Debug.LogWarning("QTEMMoopSweep is missing");
+                            Debug.LogWarning("QTE Sweep is missing");
                         }
                         else if (pickUpWatering == null)
                         {
@@ -114,7 +123,38 @@ public class Player : MonoBehaviour
                         }
                     }
                 }
+            }
 
+            if (collid.name == "Moop")
+            {
+                isThisMoop = true;
+                GameManager.Instance.isMoop = isThisMoop;
+                if (Input.GetKeyDown(interacButton) && canInteract && isThisMoop)
+                {
+                    if (qteMoop != null && !qteMoop.isActive())
+                    {
+                        StartCoroutine(SweepMoopQTE());
+                    }
+                    else
+                    {
+                        if (qteMoop == null)
+                        {
+                            Debug.LogWarning("QTE Sweep is missing");
+                        }
+                        else if (pickUpWatering == null)
+                        {
+                            Debug.LogWarning("pickUpWatering is missing");
+                        }
+                        else
+                        {
+                            Debug.Log("Put down the watering can or check references!");
+                        }
+                    }
+                }
+            }
+
+            if (Input.GetKeyDown(interacButton))
+            {
                 if (collid.name == "Wastafel" && canInteract)
                 {
                     if (!pickUpWatering.isPickUp)
@@ -203,9 +243,13 @@ public class Player : MonoBehaviour
             yield return null;
         }
 
-        if (QTEMoopSweep.isClean)
+        if (qteMoop.isClean)
         {
             Debug.Log("Sweep is done!");
+        }
+        else if (qteMoop.isClean)
+        {
+            Debug.Log("Moop is done!");
         }
         playerMovement.enabled = true;
     }

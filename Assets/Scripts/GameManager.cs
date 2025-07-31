@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private QTEManager qteManager;
     [SerializeField] private DialogueTrigger[] dialogueTriggers;
     [SerializeField] private int combos;
+    [SerializeField] private Sprite[] spritesMoop;
+    [SerializeField] private Sprite[] spritesSweep;
+    private SpriteRenderer srSweep;
+    private SpriteRenderer srMoop;
+    public GameObject Moop;
+    public GameObject Sweep;
     private UIManager uiManager;
 
 
@@ -21,6 +28,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isQTETrigger;
     public float SetValueTotalScoreUI;
     public float SetValueMultiplierScoreUI;
+    private bool doneSweep;
+    private bool doneMoop;
+    private bool doneWashing;
+    public bool isSweep;
+    public bool isMoop;
 
     [SerializeField] private bool hasPlayedIntro = false;
     [SerializeField] private bool hasPlayedEndDay = false;
@@ -53,6 +65,16 @@ public class GameManager : MonoBehaviour
             hasPlayedIntro = true;
         }
 
+        srMoop = Moop.GetComponent<SpriteRenderer>();
+        srSweep = Sweep.GetComponent<SpriteRenderer>();
+
+        if (!doneMoop && !doneSweep)
+        {
+            srMoop.sprite = spritesMoop[0];
+            srSweep.sprite = spritesSweep[0];
+        }
+
+        isMoop = isSweep = false;
         totalScore = 0;
         totalMultiplier = 1;
     }
@@ -60,10 +82,25 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
 
-        if (totalScore >= 500 && !hasPlayedEndDay)
+        if (!hasPlayedEndDay)
         {
-            dialogueTriggers[1].TriggerDialogue();
-            hasPlayedEndDay = true;
+            if (!doneSweep)
+            {
+                Debug.Log("Task Sweep the floor");
+            }
+            else if (!doneMoop)
+            {
+                Debug.Log("Task Moop the floor");
+            }
+            else if (totalScore < 2000)
+            {
+                Debug.Log("Score is last then the Requirment score");
+            }
+            else
+            {
+                dialogueTriggers[1].TriggerDialogue();
+                hasPlayedEndDay = true;
+            }
         }
 
         if (player == null)
@@ -99,6 +136,16 @@ public class GameManager : MonoBehaviour
 
     public void onQTESucces()
     {
+        if (isMoop)
+        {
+            doneMoop = true;
+            srMoop.sprite = spritesMoop[1];
+        }
+        else if (isSweep)
+        {
+            doneSweep = true;
+            srSweep.sprite = spritesSweep[1];
+        }
         Debug.Log("QTE is Succes!");
         isQTETrigger = false;
     }

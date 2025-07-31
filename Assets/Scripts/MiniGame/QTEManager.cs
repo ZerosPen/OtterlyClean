@@ -19,7 +19,8 @@ public class QTEManager : MonoBehaviour
     public int currIndexKey;
     [SerializeField] private bool QTEActive;
     [SerializeField] private bool isDone;
-    public QTE_MoopSweep moopSwep;
+    public Sweep sweep;
+    public Moop moop;
 
     public float timerPerKey;
     [SerializeField] private float timer;
@@ -55,7 +56,14 @@ public class QTEManager : MonoBehaviour
             }
         }
 
-        QTE_MoopSweep.Instance.StartQTE();
+        if (GameManager.Instance.isSweep)
+        {
+            Sweep.Instance.StartQTE();
+        }
+        else if (GameManager.Instance.isMoop)
+        {
+            Moop.Instance.StartQTE();
+        }
         comboSequence = GenerateComboKeys(length);
         currIndexKey = 0;
         QTEActive = true;

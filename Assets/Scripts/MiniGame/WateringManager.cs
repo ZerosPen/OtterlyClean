@@ -7,6 +7,9 @@ public class WateringManager : MonoBehaviour
     public List<PlantWater> plants;
     public PickUpWatering wateringCan;
     private int currentPlantIndex = 0;
+    public GameObject fKeyUIPrefab;
+    private GameObject currentFUI;
+    public Canvas uiCanvas;
 
     private List<PlantWater> shufflePlants = new List<PlantWater>();
     public static WateringManager instance;
@@ -32,7 +35,18 @@ public class WateringManager : MonoBehaviour
                 if (!shufflePlants[currentPlantIndex].isWatered)
                 {
                     Debug.Log("Index: " + currentPlantIndex + ", Object: " + shufflePlants[currentPlantIndex].gameObject.name);
-                    shufflePlants[currentPlantIndex].ActivePlant();
+                    var plant = shufflePlants[currentPlantIndex];
+                    plant.ActivePlant();
+
+                    if (currentFUI == null)
+                    {
+                        currentFUI = Instantiate(fKeyUIPrefab, uiCanvas.transform);
+                        var follow = currentFUI.GetComponent<UI_WateringFollow>();
+                        if (follow != null)
+                        {
+                            follow.Initialize(plant.transform);
+                        }
+                    }
                 }
             }
         }
@@ -42,6 +56,12 @@ public class WateringManager : MonoBehaviour
     {
         int randomIndex = Random.Range(0, plants.Count);
         currentPlantIndex++;
+
+        if (currentFUI != null)
+        {
+            Destroy(currentFUI);
+        }
+
         if (currentPlantIndex < plants.Count)
         {
             plants[currentPlantIndex].ActivePlant();
@@ -49,6 +69,7 @@ public class WateringManager : MonoBehaviour
         else
         {
             Debug.Log("All plant been watered!");
+            GameManager.Instance.doneWashing = true;
         }
     }
 

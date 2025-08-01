@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 43538f0c476f1c043baf5adc0ee134c8
+guid: 1ad35278abe8ea3448032600773d9800
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -108,7 +108,28 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Wood table_0
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 482
+        width: 152
+        height: 148
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35f4dd23298fb8e45afa04ceba273b4c
+      internalID: -1521096609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +140,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Wood table_0: -1521096609
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

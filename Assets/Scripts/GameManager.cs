@@ -29,9 +29,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isQTETrigger;
     private float SetValueTotalScoreUI;
     private float SetValueMultiplierScoreUI;
+    public int dayCount;
     private bool doneSweep;
     private bool doneMoop;
-    private bool doneWashing;
+    public bool doneWashing;
     public bool isSweep;
     public bool isMoop;
     public bool isWatering;
@@ -113,6 +114,11 @@ public class GameManager : MonoBehaviour
                 dialogueTriggers[1].TriggerDialogue();
                 hasPlayedEndDay = true;
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && hasPlayedEndDay)
+        {
+            nextDay();
         }
 
         if (player == null)
@@ -231,6 +237,27 @@ public class GameManager : MonoBehaviour
         doneWashing = false;
         hasPlayedIntro = false;
         hasPlayedEndDay = false;
+
+        Player scPlayer = player.GetComponent<Player>();
+        scPlayer.Reset();
+
         Debug.LogWarning("Game has been reset!");
+    }
+
+    private void nextDay()
+    {
+        dayCount++;
+        doneMoop = false;
+        doneSweep = false;
+        doneWashing = false;
+        hasPlayedEndDay = false;
+
+        if (!doneMoop && !doneSweep)
+        {
+            srMoop.sprite = spritesMoop[0];
+            srSweep.sprite = spritesSweep[0];
+        }
+
+        Debug.LogWarning("Game has continue!");
     }
 }

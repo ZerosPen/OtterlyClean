@@ -53,6 +53,7 @@ public class Player : MonoBehaviour
             Debug.LogWarning("PlayerMovement is NULL");
             return;
         }
+
         FindpickUpWatering();
 
         dirX = playerMovement.directionX;
@@ -97,6 +98,7 @@ public class Player : MonoBehaviour
                 animator.Play("Walk-Down");
             }
         }
+
         else if (dirY >= 1)
         {
             if (holdSweep)
@@ -354,6 +356,15 @@ public class Player : MonoBehaviour
     public void hidePlayer()
     {
         this.gameObject.SetActive(false);
+    }
+
+    public void Reset()
+    {
+        score = 0;
+        multiplierScore = 1;
+        holdMoop = false;
+        holdSweep = false;
+        holdWatercan = false;
     }
 
     IEnumerator WaitAndFindpickUpWatering()

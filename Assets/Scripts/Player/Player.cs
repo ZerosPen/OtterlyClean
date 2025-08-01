@@ -7,14 +7,15 @@ public class Player : MonoBehaviour
 {
     [Header("Status")]
     public KeyCode interacButton = KeyCode.E;
-    public KeyCode WateringButton = KeyCode.F;
+    public KeyCode actionButton = KeyCode.F;
     [SerializeField] private Transform interact;
     [SerializeField] private float interactRadius;
     [SerializeField] private LayerMask triggerBox;
     [SerializeField] private bool canInteract;
     [SerializeField] private Animator animator;
-    public bool isThisMoop;
-    public bool isThisSweep;
+    public bool holdMoop;
+    public bool holdSweep;
+    public bool holdWatercan;
     private bool canPickUPcan = true;
     private float dirX;
     private float dirY;
@@ -42,7 +43,7 @@ public class Player : MonoBehaviour
     {
         score = 0f;
         multiplierScore = 1f;
-        isThisMoop = isThisSweep = false;
+        holdSweep = holdMoop = false;
     }
 
     private void Update()
@@ -59,16 +60,61 @@ public class Player : MonoBehaviour
 
         if (dirX == 0 && dirY == 0)
         {
-            animator.Play("idle");
+            if (holdSweep)
+            {
+                animator.Play("idle-Broom");
+            }
+            else if (holdMoop)
+            {
+                animator.Play("idle-Moop");
+            }
+            else if (holdWatercan)
+            {
+                animator.Play("idle-WaterPot");
+            }
+            else
+            {
+                animator.Play("idle");
+            }
         }
 
         if (dirY <= -1)
         {
-            animator.Play("Walk-Down");
+            if (holdSweep)
+            {
+                animator.Play("Walk-Down-Broom");
+            }
+            else if (holdMoop)
+            {
+                animator.Play("Walk-Down-Moop");
+            }
+            else if (holdWatercan)
+            {
+                animator.Play("Walk-Down-WaterPot");
+            }
+            else
+            {
+                animator.Play("Walk-Down");
+            }
         }
         else if (dirY >= 1)
         {
-            animator.Play("Walk-Up");
+            if (holdSweep)
+            {
+                animator.Play("Walk-Up-Broom");
+            }
+            else if (holdMoop)
+            {
+                animator.Play("Walk-Up-Moop");
+            }
+            else if (holdWatercan)
+            {
+                animator.Play("Walk-Up-WaterPot");
+            }
+            else
+            {
+                animator.Play("Walk-Up");
+            } 
         }
 
         if (dirX > 0 && !isFacingRight)
@@ -81,9 +127,6 @@ public class Player : MonoBehaviour
         }
 
         canInteract = false;
-        GameManager.Instance.isSweep = isThisSweep = false;
-        GameManager.Instance.isMoop = isThisMoop = false;
-        isThisMoop = false;
 
         Collider2D[] collids = Physics2D.OverlapCircleAll(interact.position, interactRadius);
 
@@ -99,58 +142,101 @@ public class Player : MonoBehaviour
             canInteract = true;
             if (collid.name == "Sweep")
             {
-                isThisSweep = true;
-                GameManager.Instance.isSweep = isThisSweep;
-                if (Input.GetKeyDown(interacButton) && canInteract && isThisSweep)
+                if (Input.GetKeyDown(interacButton) && canInteract)
                 {
-                    if (qteSweep != null && !qteSweep.isActive())
-                    { 
-                        StartCoroutine(SweepMoopQTE());
+                    if (holdMoop || holdWatercan)
+                    {
+                        Debug.Log("Must put dont the tools");
+                    }
+                    else if (!holdSweep)
+                    {
+                        holdSweep = true;
+                        GameManager.Instance.isSweep = holdSweep;
+                    }
+                    else if (holdSweep)
+                    {
+                        holdSweep = false;
+                        GameManager.Instance.isSweep = holdSweep;
+                    }
+                }
+
+                if (Input.GetKeyDown(actionButton) && holdSweep && qteSweep != null && !qteSweep.isActive())
+                {
+                    StartCoroutine(SweepMoopQTE());
+                }
+                else
+                {
+                    if (qteSweep == null)
+                    {
+                        Debug.LogWarning("QTE Sweep is missing");
+                    }
+                    else if (pickUpWatering == null)
+                    {
+                        Debug.LogWarning("pickUpWatering is missing");
                     }
                     else
                     {
-                        if (qteSweep == null)
-                        {
-                            Debug.LogWarning("QTE Sweep is missing");
-                        }
-                        else if (pickUpWatering == null)
-                        {
-                            Debug.LogWarning("pickUpWatering is missing");
-                        }
-                        else
-                        {
-                            Debug.Log("Put down the watering can or check references!");
-                        }
+                        Debug.Log("Put down the watering can or check references!");
                     }
                 }
             }
 
             if (collid.name == "Moop")
             {
-                isThisMoop = true;
-                GameManager.Instance.isMoop = isThisMoop;
-                if (Input.GetKeyDown(interacButton) && canInteract && isThisMoop)
+                if (Input.GetKeyDown(interacButton) && canInteract)
                 {
-                    if (qteMoop != null && !qteMoop.isActive())
+                    if (holdSweep || holdWatercan)
                     {
-                        StartCoroutine(SweepMoopQTE());
+                        Debug.Log("Must put dont the tools");
+                    }
+                    else if (!holdMoop)
+                    {
+                        holdMoop = true;
+                        GameManager.Instance.isMoop = holdMoop;
+                    }
+                    else if (holdMoop)
+                    {
+                        holdMoop = false;
+                        GameManager.Instance.isMoop = holdMoop;
+                    }
+
+                    
+                }
+                if (Input.GetKeyDown(actionButton) && holdMoop && qteMoop != null && !qteMoop.isActive())
+                {
+                    StartCoroutine(SweepMoopQTE());
+                }
+                else
+                {
+                    if (qteMoop == null)
+                    {
+                        Debug.LogWarning("QTE Sweep is missing");
+                    }
+                    else if (pickUpWatering == null)
+                    {
+                        Debug.LogWarning("pickUpWatering is missing");
                     }
                     else
                     {
-                        if (qteMoop == null)
-                        {
-                            Debug.LogWarning("QTE Sweep is missing");
-                        }
-                        else if (pickUpWatering == null)
-                        {
-                            Debug.LogWarning("pickUpWatering is missing");
-                        }
-                        else
-                        {
-                            Debug.Log("Put down the watering can or check references!");
-                        }
+                        Debug.Log("Put down the watering can or check references!");
                     }
                 }
+            }
+
+            if (collid.name == "BoxWaterCan" && Input.GetKeyDown(interacButton) && canInteract)
+            {
+                if (pickUpWatering.canPickUp)
+                {
+                    holdWatercan = true;
+                    pickUpWatering.PickUpWateringCan();
+                }
+                else if (!pickUpWatering.canPickUp)
+                {
+                    holdWatercan = false;
+                    
+                    pickUpWatering.PutDownWateringCan();
+                }
+                GameManager.Instance.isWatering = holdWatercan;
             }
 
             if (Input.GetKeyDown(interacButton))
@@ -167,27 +253,17 @@ public class Player : MonoBehaviour
                     }
                 }
 
-                if (collid.name == "BoxWaterCan" && canInteract)
-                {
-                    if (pickUpWatering.canPickUp)
-                    {
-                        pickUpWatering.PickUpWateringCan();
-                    }
-                    else if (!pickUpWatering.canPickUp)
-                    {
-                        pickUpWatering.PutDownWateringCan();
-                    }
-                }
+                
 
                 break;
             }
 
-            if (Input.GetKeyDown(WateringButton))
+            if (Input.GetKeyDown(actionButton))
             {
                 if (collid.CompareTag("Plant") && canInteract)
                 {
                     PlantWater plant = collid.GetComponent<PlantWater>();
-                    if (pickUpWatering.canPickUp)
+                    if (pickUpWatering.canPickUp && holdWatercan)
                     {
                         Debug.Log("Pick Up the watering can!");
                     }
@@ -217,7 +293,24 @@ public class Player : MonoBehaviour
     public void FlipSprite()
     {
         isFacingRight = !isFacingRight;
-        animator.Play("Right");
+
+        if (holdSweep)
+        {
+            animator.Play("Right-Broom");
+        }
+        else if (holdMoop)
+        {
+            animator.Play("Right-Moop");
+        }
+        else if (holdWatercan)
+        {
+            animator.Play("Right-WaterPot");
+        }
+        else
+        {
+            animator.Play("Right");
+        }
+        
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;

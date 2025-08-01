@@ -325,6 +325,12 @@ public class Player : MonoBehaviour
         Debug.Log($"Amount score {score}");
     }
 
+    public void AddMultiplier(float multi)
+    {
+        multiplierScore += multi;
+        GameManager.Instance.SetMultiplierScore(multiplierScore);
+    }
+
     IEnumerator SweepMoopQTE()
     {
         GameManager.Instance.StartQTE();

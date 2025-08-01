@@ -86,6 +86,8 @@ public class Sweep : MonoBehaviour
         Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         if (player != null)
         {
+            float multi = 0.5f;
+            player.AddMultiplier(multi);
             scoreToAdd = scoreToAdd * player.multiplierScore;
             player.AddScore(scoreToAdd);
         }

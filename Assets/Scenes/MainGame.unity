@@ -377,7 +377,7 @@ Transform:
   m_GameObject: {fileID: 123999315}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.544, y: 1.182, z: 1}
+  m_LocalPosition: {x: 1.463, y: 1.112, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9143,7 +9143,7 @@ Transform:
   m_GameObject: {fileID: 1486207879}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.075, y: 0.446, z: -1}
+  m_LocalPosition: {x: -0.075, y: 0.446, z: 0}
   m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -11044,7 +11044,7 @@ Transform:
   m_GameObject: {fileID: 2060166833}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.04171896, y: 3.21, z: 0}
+  m_LocalPosition: {x: -0.04171896, y: 3.21, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12361,7 +12361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQTEActive: 0
   isClean: 0
-  baseScore: 200
+  baseScore: 500
   scoreToAdd: 0
 --- !u!114 &6946573292928216023
 MonoBehaviour:
@@ -12377,7 +12377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQTEActive: 0
   isClean: 0
-  baseScore: 100
+  baseScore: 500
   scoreToAdd: 0
 --- !u!4 &7219257814574771553
 Transform:

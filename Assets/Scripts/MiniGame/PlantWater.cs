@@ -36,6 +36,8 @@ public class PlantWater : MonoBehaviour
         Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         if(player != null)
         {
+            float multiplierToAdd = 0.5f;
+            player.AddMultiplier(multiplierToAdd);
             float scoreToAdd = baseScore * player.multiplierScore;
             player.AddScore(scoreToAdd);
         }

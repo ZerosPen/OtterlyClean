@@ -59,6 +59,15 @@ public class Player : MonoBehaviour
         dirX = playerMovement.directionX;
         dirY = playerMovement.directionY;
 
+        if (DialogueManager.Instance.isDialogueActive)
+        {
+            playerMovement.enabled = false;
+        }
+        else
+        {
+            playerMovement.enabled = true;
+        }
+
         if (dirX == 0 && dirY == 0)
         {
             if (holdSweep)

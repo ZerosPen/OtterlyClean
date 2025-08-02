@@ -87,7 +87,15 @@ public class DialogueManager : MonoBehaviour
 
     public void GameContinue()
     {
-        animator.Play("show");
+        if (lines.Count == 0)
+        {
+            EndDialogue();
+            return;
+        }
+        else
+        {
+            animator.Play("show");
+        }
     }
 
     void EndDialogue()

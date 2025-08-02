@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Sprite[] spritesSweep;
     [SerializeField] private SpriteRenderer srSweep;
     [SerializeField] private SpriteRenderer srMoop;
+    [SerializeField] private Animator bearAnimator;
     public GameObject Moop;
     public GameObject Sweep;
     private UIManager uiManager;
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     public int dayCount;
     private bool doneSweep;
     private bool doneMoop;
+    public bool exit;
     public bool doneWatering;
     public bool isSweep;
     public bool isMoop;
@@ -43,7 +45,7 @@ public class GameManager : MonoBehaviour
     private bool isTimerRunning;
 
     [SerializeField] private bool hasPlayedIntro = false;
-    [SerializeField] private bool hasPlayedEndDay = false;
+    public bool hasPlayedEndDay = false;
 
     private void Awake()
     {
@@ -61,11 +63,15 @@ public class GameManager : MonoBehaviour
 
         if (qteManager == null) qteManager = QTEManager.Instance;
         uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        bearAnimator = GameObject.Find("Bear").GetComponent<Animator>();
     }
 
     private void Start()
     {
-        SoundManager.instance.PlaySound2D("Wind");
+        if (bearAnimator != null)
+        {
+            bearAnimator.Play("Sleep");
+        } 
 
         if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
         {
@@ -75,6 +81,7 @@ public class GameManager : MonoBehaviour
 
         srMoop = Moop.GetComponent<SpriteRenderer>();
         srSweep = Sweep.GetComponent<SpriteRenderer>();
+        
 
         if (!doneMoop && !doneSweep)
         {
@@ -90,6 +97,13 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         uiManager.UpdateScoreUI(totalScore);
+        uiManager.UpdateMultiplierUI(totalMultiplier);
+
+        if (bearAnimator != null)
+        {
+            bearAnimator.Play("Sleep");
+        }
+
         if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
         {
             dialogueTriggers[0].TriggerDialogue();
@@ -123,9 +137,16 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && hasPlayedEndDay)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            nextDay();
+            if (hasPlayedEndDay)
+            {
+                nextDay();
+            }
+            else
+            {
+                dialogueTriggers[3].TriggerDialogue();
+            }
         }
 
         if (player == null)
@@ -134,7 +155,7 @@ public class GameManager : MonoBehaviour
         }
         if (LevelManager.Instance.isGameActive)
         {
-            GameOn();
+            if (!exit) GameOn();
         }
 
         if (isTimerRunning)
@@ -218,9 +239,7 @@ public class GameManager : MonoBehaviour
     public void GameOff()
     {
 
-        player.SetActive(false);
-        hasPlayedIntro = false;
-        hasPlayedEndDay = false;
+        resetGame();
         LevelManager.Instance.isGameActive = false;
     }
 
@@ -249,9 +268,26 @@ public class GameManager : MonoBehaviour
                 uiManager.UpdateScoreUI(totalScore);
                 uiManager.UpdateMultiplierUI(totalMultiplier);
             }
+
+            // Safely fetch the Bear animator
+            GameObject bearObj = GameObject.Find("Bear");
+            if (bearObj != null)
+            {
+                bearAnimator = bearObj.GetComponent<Animator>();
+            }
+            else
+            {
+                Debug.LogWarning("Bear GameObject not found in scene.");
+                bearAnimator = null;
+            }
         }
 
         resetGame();
+    }
+
+    public void EndDayDialogue()
+    {
+        dialogueTriggers[2].TriggerDialogue();
     }
 
     private void resetGame()
@@ -264,6 +300,7 @@ public class GameManager : MonoBehaviour
         doneWatering = false;
         hasPlayedIntro = false;
         hasPlayedEndDay = false;
+        StartDayTimer();
 
         Player scPlayer = player.GetComponent<Player>();
         scPlayer.Reset();

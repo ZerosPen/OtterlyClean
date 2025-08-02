@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdayCount()
     {
-        DayCount.text = GameManager.Instance.dayCount.ToString();
+        DayCount.text = $"DAY {GameManager.Instance.dayCount.ToString()}";
     }
 
     public void UpdateTime(float timeLeft)

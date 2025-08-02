@@ -56,7 +56,7 @@ public class LevelManager : MonoBehaviour
             yield return null;
         } while (scene.progress < 0.9f);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.1f);
         isGameActive = true;
 
         scene.allowSceneActivation = true;

@@ -306,8 +306,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundEffects:
-  - groupID: 
-    clips: []
+  - groupID: Walking
+    clips:
+    - {fileID: 8300000, guid: 399d919a74e33d141bad1cd262070c30, type: 3}
+  - groupID: Hover
+    clips:
+    - {fileID: 8300000, guid: 80c0d2f0c6e15a04bbd3bd11d6796194, type: 3}
+  - groupID: Click
+    clips:
+    - {fileID: 8300000, guid: 80c0d2f0c6e15a04bbd3bd11d6796194, type: 3}
 --- !u!114 &6781966116205337053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,8 +327,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e7ab179ab40cd429d411967f5ce0b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sfxLibary: {fileID: 0}
-  sfx2dLibary: {fileID: 0}
+  sfxLibary: {fileID: 343322231430290400}
+  sfx2dLibary: {fileID: 7988965100371261194}
 --- !u!114 &734983666831888381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,7 +341,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caa2e3df773ff5d40bb2794b2a275e89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tracks: []
+  tracks:
+  - trackName: BGM
+    clip: {fileID: 8300000, guid: a612ba8dfcda4ac45bdfb03126e2121f, type: 3}
+  - trackName: BGM2
+    clip: {fileID: 8300000, guid: d491fe73564a1fa4e9cd533ed490395e, type: 3}
 --- !u!114 &1485034458118450375
 MonoBehaviour:
   m_ObjectHideFlags: 0

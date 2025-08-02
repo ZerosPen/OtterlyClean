@@ -47,6 +47,18 @@ public class PauseMenu : MonoBehaviour
         pasueIsOpen = false;
     }
 
+    public void OpenTask()
+    {
+        DialogueManager.Instance.GamePause();
+        StartCoroutine(DelayPause());
+    }
+
+    public void Closetask()
+    {
+        Time.timeScale = 1f;
+        DialogueManager.Instance.GameContinue();
+    }
+
     public void changetoMainMenu()
     {
         pausePanel.SetActive(false);

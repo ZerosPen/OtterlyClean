@@ -64,14 +64,17 @@ public class Player : MonoBehaviour
             if (holdSweep)
             {
                 animator.Play("idle-Broom");
+                SoundManager.instance.PlaySound2D("Walking");
             }
             else if (holdMoop)
             {
                 animator.Play("idle-Moop");
+                SoundManager.instance.PlaySound2D("Walking");
             }
             else if (holdWatercan)
             {
                 animator.Play("idle-WaterPot");
+                SoundManager.instance.PlaySound2D("Walking");
             }
             else
             {
@@ -164,7 +167,15 @@ public class Player : MonoBehaviour
 
                 if (Input.GetKeyDown(actionButton) && holdSweep && qteSweep != null && !qteSweep.isActive())
                 {
-                    StartCoroutine(SweepMoopQTE());
+                    if (!GameManager.Instance.hasPlayedEndDay)
+                    {
+                        StartCoroutine(SweepMoopQTE());
+                    }
+                    else
+                    {
+                        GameManager.Instance.EndDayDialogue();
+                    }
+
                 }
                 else
                 {
@@ -206,7 +217,14 @@ public class Player : MonoBehaviour
                 }
                 if (Input.GetKeyDown(actionButton) && holdMoop && qteMoop != null && !qteMoop.isActive())
                 {
-                    StartCoroutine(SweepMoopQTE());
+                    if (!GameManager.Instance.hasPlayedEndDay)
+                    {
+                        StartCoroutine(SweepMoopQTE());
+                    }
+                    else
+                    {
+                        GameManager.Instance.EndDayDialogue();
+                    }
                 }
                 else
                 {
@@ -266,7 +284,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(actionButton))
             {
-                if (collid.CompareTag("Plant") && canInteract)
+                if (collid.CompareTag("Plant") && canInteract && !GameManager.Instance.hasPlayedEndDay)
                 {
                     PlantWater plant = collid.GetComponent<PlantWater>();
                     if (pickUpWatering.canPickUp && holdWatercan)
@@ -278,6 +296,10 @@ public class Player : MonoBehaviour
                         Debug.Log("Press F to watering the plant!");
                         plant.WateringPlant();
                     }
+                }
+                else
+                {
+                    GameManager.Instance.EndDayDialogue();
                 }
                 break;
             }

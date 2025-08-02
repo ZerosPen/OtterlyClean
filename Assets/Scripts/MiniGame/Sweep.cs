@@ -10,6 +10,7 @@ public class Sweep : MonoBehaviour
     [SerializeField] private bool isQTEActive;
     public bool isClean;
     public float baseScore;
+    [SerializeField] private Animator playerAnimator;
     [SerializeField] private float scoreToAdd;
 
     public static Sweep Instance;
@@ -31,6 +32,15 @@ public class Sweep : MonoBehaviour
         isQTEActive = true;
         Debug.Log($"isQTEActive set to {isQTEActive}");
         isClean = false;
+
+        if (playerAnimator == null)
+        {
+            playerAnimator = GetComponent<Animator>();
+            if (playerAnimator == null)
+            {
+                Debug.LogWarning("Animator not found on Sweep GameObject.");
+            }
+        }
 
         Debug.Log("QTE Started! Press the correct keys in order!");
         foreach (KeyCode key in QTEManager.Instance.comboSequence)
@@ -82,6 +92,10 @@ public class Sweep : MonoBehaviour
         isClean = true;
         isQTEActive = false;
 
+        if (playerAnimator != null)
+        {
+            playerAnimator.Play("Sweeping");
+        }
 
         Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         if (player != null)

@@ -12,12 +12,23 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI valueMultiplier;
     [SerializeField] private TextMeshProUGUI DayCount;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private GameObject panelDialogue;
 
+    private void Update()
+    {
+        if (DialogueManager.Instance.isDialogueActive)
+        {
+            panelDialogue.SetActive(true);
+        }
+        else
+        {
+            panelDialogue.SetActive(false);
+        }
+    }
     public void UpdateScoreUI(float score)
     {
         valueScore.text = score.ToString();
     }
-
     public void UpdateMultiplierUI(float multiplier)
     {
         valueMultiplier.text = $"X {multiplier:F1}";

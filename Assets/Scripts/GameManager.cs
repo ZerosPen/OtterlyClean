@@ -15,11 +15,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int combos;
     [SerializeField] private Sprite[] spritesMoop;
     [SerializeField] private Sprite[] spritesSweep;
+    [SerializeField] private Sprite[] spritesWindowgarden;
     [SerializeField] private SpriteRenderer srSweep;
     [SerializeField] private SpriteRenderer srMoop;
+    [SerializeField] private SpriteRenderer srWindowgarden;
     [SerializeField] private Animator bearAnimator;
     public GameObject Moop;
     public GameObject Sweep;
+    public GameObject Windowgarden;
     private UIManager uiManager;
 
 
@@ -31,13 +34,14 @@ public class GameManager : MonoBehaviour
     private float SetValueTotalScoreUI;
     private float SetValueMultiplierScoreUI;
     public int dayCount;
-    private bool doneSweep;
-    private bool doneMoop;
+    [SerializeField] private bool doneSweep;
+    [SerializeField] private bool doneMoop;
     public bool exit;
     public bool doneWatering;
     public bool isSweep;
     public bool isMoop;
     public bool isWatering;
+    private bool isFailed;
 
     [Header("Day Timer")]
     [SerializeField] private float dayTimeLimit = 120f;
@@ -83,15 +87,38 @@ public class GameManager : MonoBehaviour
         srSweep = Sweep.GetComponent<SpriteRenderer>();
         
 
-        if (!doneMoop && !doneSweep)
+        if (!doneMoop && !doneSweep && !doneWatering)
         {
             srMoop.sprite = spritesMoop[0];
             srSweep.sprite = spritesSweep[0];
+            srWindowgarden.sprite = spritesWindowgarden[0];
         }
+        TryFindSpriteReferences();
         StartDayTimer();
-        isMoop = isSweep = false;
+        isMoop = isSweep = doneSweep = doneMoop = doneWatering = false;
         totalScore = 0;
         totalMultiplier = 1;
+    }
+
+    private void TryFindSpriteReferences()
+    {
+        Moop = GameObject.Find("Moop");
+        if (Moop != null)
+        {
+            srMoop = Moop.GetComponent<SpriteRenderer>();
+        }
+
+        Sweep = GameObject.Find("Sweep");
+        if (Sweep != null)
+        {
+            srSweep = Sweep.GetComponent<SpriteRenderer>();
+        }
+
+        Windowgarden = GameObject.Find("WindowGarden");
+        if (Windowgarden != null)
+        {
+            srWindowgarden = Windowgarden.GetComponent<SpriteRenderer>();
+        }
     }
 
     private void Update()
@@ -110,17 +137,6 @@ public class GameManager : MonoBehaviour
             hasPlayedIntro = true;
         }
 
-        if (Moop == null)
-        {
-            Moop = GameObject.Find("Mop");
-        }
-
-        if (Sweep == null)
-        {
-            Sweep = GameObject.Find("Broom");
-            
-        }
-
         if (!hasPlayedEndDay)
         {
             if (!doneSweep)
@@ -137,11 +153,15 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && hasPlayedIntro)
         {
-            if (hasPlayedEndDay)
+            if (isFailed)
             {
-                nextDay();
+                FadeManager.Instance.FadeToBlackAndNextDay(resetGame);
+            }
+            else if (hasPlayedEndDay)
+            {
+                FadeManager.Instance.FadeToBlackAndNextDay(nextDay);
             }
             else
             {
@@ -175,6 +195,11 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        if (doneWatering)
+        {
+            srWindowgarden.sprite = spritesWindowgarden[1];
+        }
+
         uiManager.UpdayCount();
     }
 
@@ -203,20 +228,11 @@ public class GameManager : MonoBehaviour
     {
         if (isMoop)
         {
-            if (srMoop == null)
-            {
-                srMoop = Moop.GetComponent<SpriteRenderer>();
-            }
             doneMoop = true;
             srMoop.sprite = spritesMoop[1];
         }
         else if (isSweep)
         {
-            if (srSweep == null)
-            {
-                srSweep = Sweep.GetComponent<SpriteRenderer>();
-            }
-
             doneSweep = true;
             srSweep.sprite = spritesSweep[1];
         }
@@ -300,7 +316,9 @@ public class GameManager : MonoBehaviour
         doneWatering = false;
         hasPlayedIntro = false;
         hasPlayedEndDay = false;
+        isFailed = true;
         StartDayTimer();
+        TryFindSpriteReferences();
 
         Player scPlayer = player.GetComponent<Player>();
         scPlayer.Reset();
@@ -326,6 +344,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            player.GetComponent<Player>().PlayerFailed();
+            isFailed = true;
             Debug.Log("You didn't finish all tasks or meet the score.");
         }
 

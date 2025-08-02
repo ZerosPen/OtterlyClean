@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
@@ -59,7 +60,7 @@ public class Player : MonoBehaviour
         dirX = playerMovement.directionX;
         dirY = playerMovement.directionY;
 
-        if (DialogueManager.Instance.isDialogueActive)
+        if (DialogueManager.Instance.isDialogueActive || QTEManager.Instance.isActive())
         {
             playerMovement.enabled = false;
         }
@@ -73,17 +74,17 @@ public class Player : MonoBehaviour
             if (holdSweep)
             {
                 animator.Play("idle-Broom");
-                SoundManager.instance.PlaySound2D("Walking");
+                //SoundManager.instance.PlaySound2D("Walking");
             }
             else if (holdMoop)
             {
                 animator.Play("idle-Moop");
-                SoundManager.instance.PlaySound2D("Walking");
+                //SoundManager.instance.PlaySound2D("Walking");
             }
             else if (holdWatercan)
             {
                 animator.Play("idle-WaterPot");
-                SoundManager.instance.PlaySound2D("Walking");
+                //SoundManager.instance.PlaySound2D("Walking");
             }
             else
             {
@@ -182,7 +183,7 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
-                        GameManager.Instance.EndDayDialogue();
+                        //GameManager.Instance.EndDayDialogue();
                     }
 
                 }
@@ -232,7 +233,7 @@ public class Player : MonoBehaviour
                     }
                     else
                     {
-                        GameManager.Instance.EndDayDialogue();
+                        //GameManager.Instance.EndDayDialogue();
                     }
                 }
                 else
@@ -308,7 +309,7 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    GameManager.Instance.EndDayDialogue();
+                   // GameManager.Instance.EndDayDialogue();
                 }
                 break;
             }
@@ -368,27 +369,23 @@ public class Player : MonoBehaviour
 
     IEnumerator SweepMoopQTE()
     {
-        GameManager.Instance.StartQTE();
+        Debug.Log("QTE Coroutine started");
         playerMovement.StopMovement();
         playerMovement.enabled = false;
 
-        yield return new WaitForFixedUpdate();
+        QTEManager.Instance.timerPerKey = 3f;
+        QTEManager.Instance.StartQTE(4);
 
         while (QTEManager.Instance.isActive())
         {
+            Debug.Log("QTE active...");
             yield return null;
         }
 
-        if (qteMoop.isClean)
-        {
-            Debug.Log("Sweep is done!");
-        }
-        else if (qteMoop.isClean)
-        {
-            Debug.Log("Moop is done!");
-        }
+        Debug.Log("QTE finished, enabling movement");
         playerMovement.enabled = true;
     }
+
     public void showPlayer()
     {
         this.gameObject.SetActive(true);
@@ -406,11 +403,18 @@ public class Player : MonoBehaviour
         holdMoop = false;
         holdSweep = false;
         holdWatercan = false;
+        playerMovement.enabled = true;
     }
 
     IEnumerator WaitAndFindpickUpWatering()
     {
         yield return new WaitForSeconds(0.1f);
         FindpickUpWatering();
+    }
+
+    public void PlayerFailed()
+    {
+        playerMovement.enabled = false;
+        animator.Play("failed");
     }
 }

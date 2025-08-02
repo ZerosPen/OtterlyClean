@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-    public static DialogueManager instance;
+    public static DialogueManager Instance;
 
     public Image character;
     public TextMeshProUGUI nameChar;
@@ -16,16 +16,20 @@ public class DialogueManager : MonoBehaviour
 
     public bool isDialogueActive = false;
     public float typingSpeed;
-    public Animator animator;
+    private Animator animator;
 
     private void Awake()
     {
-        if (instance != null) Destroy(gameObject);
-        else
+        if (Instance != null && Instance != this)
         {
-            instance = this;
+            Destroy(gameObject);
+            return;
         }
 
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        animator = GetComponent<Animator>();
         lines = new Queue<DialogueLine>();
     }
 
@@ -33,7 +37,10 @@ public class DialogueManager : MonoBehaviour
     {
         isDialogueActive = true;
 
-        animator.Play("show");
+        if (animator != null)
+        {
+            animator.Play("show");
+        }
 
         lines.Clear();
 

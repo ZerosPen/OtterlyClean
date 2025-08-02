@@ -52,6 +52,30 @@ public class WateringManager : MonoBehaviour
         }
     }
 
+    public void nextDay()
+    {
+        // Reset all plants
+        foreach (var plant in plants)
+        {
+            plant.ResetPlant();
+        }
+
+        // Reset UI and index
+        if (currentFUI != null)
+        {
+            Destroy(currentFUI);
+            currentFUI = null;
+        }
+
+        currentPlantIndex = 0;
+
+        // Reshuffle for next day
+        shufflePlants = new List<PlantWater>(plants);
+        shuffle(shufflePlants);
+
+        Debug.Log("New day started! All plants reset.");
+    }
+
     public void NextPlant()
     {
         int randomIndex = Random.Range(0, plants.Count);
@@ -69,7 +93,7 @@ public class WateringManager : MonoBehaviour
         else
         {
             Debug.Log("All plant been watered!");
-            GameManager.Instance.doneWashing = true;
+            GameManager.Instance.doneWatering = true;
         }
     }
 

@@ -227,7 +227,11 @@ public class Player : MonoBehaviour
 
             if (collid.name == "BoxWaterCan" && Input.GetKeyDown(interacButton) && canInteract)
             {
-                if (pickUpWatering.canPickUp)
+                if (holdSweep || holdMoop)
+                {
+                    Debug.Log("Must put dont the tools");
+                }
+                else if (pickUpWatering.canPickUp)
                 {
                     holdWatercan = true;
                     pickUpWatering.PickUpWateringCan();

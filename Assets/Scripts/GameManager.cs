@@ -32,10 +32,15 @@ public class GameManager : MonoBehaviour
     public int dayCount;
     private bool doneSweep;
     private bool doneMoop;
-    public bool doneWashing;
+    public bool doneWatering;
     public bool isSweep;
     public bool isMoop;
     public bool isWatering;
+
+    [Header("Day Timer")]
+    [SerializeField] private float dayTimeLimit = 120f;
+    private float currentDayTimer;
+    private bool isTimerRunning;
 
     [SerializeField] private bool hasPlayedIntro = false;
     [SerializeField] private bool hasPlayedEndDay = false;
@@ -76,6 +81,7 @@ public class GameManager : MonoBehaviour
             srMoop.sprite = spritesMoop[0];
             srSweep.sprite = spritesSweep[0];
         }
+        StartDayTimer();
         isMoop = isSweep = false;
         totalScore = 0;
         totalMultiplier = 1;
@@ -84,6 +90,12 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         uiManager.UpdateScoreUI(totalScore);
+        if (dialogueTriggers != null && dialogueTriggers.Length > 0 && !hasPlayedIntro)
+        {
+            dialogueTriggers[0].TriggerDialogue();
+            hasPlayedIntro = true;
+        }
+
         if (Moop == null)
         {
             Moop = GameObject.Find("Mop");
@@ -109,11 +121,6 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Score is last then the Requirment score");
             }
-            else
-            {
-                dialogueTriggers[1].TriggerDialogue();
-                hasPlayedEndDay = true;
-            }
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && hasPlayedEndDay)
@@ -129,6 +136,25 @@ public class GameManager : MonoBehaviour
         {
             GameOn();
         }
+
+        if (isTimerRunning)
+        {
+            currentDayTimer -= Time.deltaTime;
+            uiManager.UpdateTime(currentDayTimer);
+
+            if (currentDayTimer <= 0f)
+            {
+                isTimerRunning = false;
+                EndDayByTimer();
+            }
+            else if (doneMoop && doneSweep && doneWatering)
+            {
+                isTimerRunning = false;
+                EndDayByTimer();
+            }
+        }
+
+        uiManager.UpdayCount();
     }
 
     public void SetTotalScore(float score)
@@ -141,7 +167,7 @@ public class GameManager : MonoBehaviour
 
     public void SetMultiplierScore(float multiplier)
     {
-        totalMultiplier += multiplier;
+        totalMultiplier = multiplier;
         SetValueMultiplierScoreUI = totalMultiplier;
         uiManager.UpdateMultiplierUI(SetValueMultiplierScoreUI);
     }
@@ -232,9 +258,10 @@ public class GameManager : MonoBehaviour
     {
         totalScore = 0;
         totalMultiplier = 1;
+        dayCount = 1;
         doneMoop = false;
         doneSweep = false;
-        doneWashing = false;
+        doneWatering = false;
         hasPlayedIntro = false;
         hasPlayedEndDay = false;
 
@@ -244,13 +271,39 @@ public class GameManager : MonoBehaviour
         Debug.LogWarning("Game has been reset!");
     }
 
+    private void StartDayTimer()
+    {
+        currentDayTimer = dayTimeLimit;
+        isTimerRunning = true;
+    }
+
+    private void EndDayByTimer()
+    {
+        Debug.Log("Time's up for the day!");
+
+        if (doneMoop && doneSweep && doneWatering && totalScore >= 2000)
+        {
+            Debug.Log("All chores done and score met. Good job!");
+            dialogueTriggers[1].TriggerDialogue();
+            hasPlayedEndDay = true;
+        }
+        else
+        {
+            Debug.Log("You didn't finish all tasks or meet the score.");
+        }
+
+        hasPlayedEndDay = true;
+    }
+
     private void nextDay()
     {
         dayCount++;
         doneMoop = false;
         doneSweep = false;
-        doneWashing = false;
+        doneWatering = false;
         hasPlayedEndDay = false;
+        WateringManager.instance.nextDay();
+        StartDayTimer();
 
         if (!doneMoop && !doneSweep)
         {

@@ -35,7 +35,7 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         pausePanel.SetActive(true);
-        DialogueManager.instance.GamePause();
+        DialogueManager.Instance.GamePause();
         StartCoroutine(DelayPause());
     }
 
@@ -43,7 +43,7 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
-        DialogueManager.instance.GameContinue();
+        DialogueManager.Instance.GameContinue();
         pasueIsOpen = false;
     }
 

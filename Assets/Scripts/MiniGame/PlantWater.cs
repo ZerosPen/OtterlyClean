@@ -9,6 +9,11 @@ public class PlantWater : MonoBehaviour
     public bool isWatered = false;
     public float baseScore;
 
+    public void ResetPlant()
+    {
+        isWatered = false;
+    }
+
     public void WateringPlant()
     {
         if (isActive && !isWatered)

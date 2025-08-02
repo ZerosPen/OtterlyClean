@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     [Header("Referece")]
     [SerializeField] private TextMeshProUGUI valueScore;
     [SerializeField] private TextMeshProUGUI valueMultiplier;
+    [SerializeField] private TextMeshProUGUI DayCount;
+    [SerializeField] private TextMeshProUGUI timerText;
 
     public void UpdateScoreUI(float score)
     {
@@ -18,6 +20,18 @@ public class UIManager : MonoBehaviour
 
     public void UpdateMultiplierUI(float multiplier)
     {
-        valueMultiplier.text = multiplier.ToString();
+        valueMultiplier.text = $"X {multiplier:F1}";
+    }
+
+    public void UpdayCount()
+    {
+        DayCount.text = GameManager.Instance.dayCount.ToString();
+    }
+
+    public void UpdateTime(float timeLeft)
+    {
+        int minutes = Mathf.FloorToInt(timeLeft / 60);
+        int seconds = Mathf.FloorToInt(timeLeft % 60);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }

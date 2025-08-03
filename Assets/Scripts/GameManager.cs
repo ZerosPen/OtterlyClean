@@ -16,32 +16,38 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Sprite[] spritesMoop;
     [SerializeField] private Sprite[] spritesSweep;
     [SerializeField] private Sprite[] spritesWindowgarden;
+    [SerializeField] private Sprite[] spritesSink;
     [SerializeField] private SpriteRenderer srSweep;
     [SerializeField] private SpriteRenderer srMoop;
     [SerializeField] private SpriteRenderer srWindowgarden;
+    [SerializeField] private SpriteRenderer srSink;
     [SerializeField] private Animator bearAnimator;
     public GameObject Moop;
     public GameObject Sweep;
     public GameObject Windowgarden;
+    public GameObject Sink;
     private UIManager uiManager;
 
 
     [Header("Status games")]
-    [SerializeField] private float totalScore;
+    public float totalScore;
     [SerializeField] private float totalMultiplier;
     [SerializeField] private bool isGameActive;
     [SerializeField] private bool isQTETrigger;
+    public float todayScore;
     private float SetValueTotalScoreUI;
     private float SetValueMultiplierScoreUI;
+    public int WashPlate;
     public int dayCount;
-    [SerializeField] private bool doneSweep;
-    [SerializeField] private bool doneMoop;
+    public bool doneSweep;
+    public bool doneMoop;
+    public bool doneWashing;
     public bool exit;
     public bool doneWatering;
     public bool isSweep;
     public bool isMoop;
     public bool isWatering;
-    private bool isFailed;
+    [SerializeField] private bool isFailed;
 
     [Header("Day Timer")]
     [SerializeField] private float dayTimeLimit = 120f;
@@ -87,28 +93,30 @@ public class GameManager : MonoBehaviour
         srSweep = Sweep.GetComponent<SpriteRenderer>();
         
 
-        if (!doneMoop && !doneSweep && !doneWatering)
+        if (!doneMoop && !doneSweep && !doneWatering && !doneWashing)
         {
             srMoop.sprite = spritesMoop[0];
             srSweep.sprite = spritesSweep[0];
             srWindowgarden.sprite = spritesWindowgarden[0];
+            srSink.sprite = spritesSink[0];
         }
         TryFindSpriteReferences();
         StartDayTimer();
-        isMoop = isSweep = doneSweep = doneMoop = doneWatering = false;
+        isMoop = isSweep = doneSweep = doneMoop = doneWatering = doneWashing = false;
+        isFailed = false;
         totalScore = 0;
         totalMultiplier = 1;
     }
 
     private void TryFindSpriteReferences()
     {
-        Moop = GameObject.Find("Moop");
+        Moop = GameObject.Find("Mop");
         if (Moop != null)
         {
             srMoop = Moop.GetComponent<SpriteRenderer>();
         }
 
-        Sweep = GameObject.Find("Sweep");
+        Sweep = GameObject.Find("Broom");
         if (Sweep != null)
         {
             srSweep = Sweep.GetComponent<SpriteRenderer>();
@@ -119,6 +127,12 @@ public class GameManager : MonoBehaviour
         {
             srWindowgarden = Windowgarden.GetComponent<SpriteRenderer>();
         }
+        Sink = GameObject.Find("Sink");
+        if (Sink != null)
+        {
+            srSink = Sink.GetComponent<SpriteRenderer>();
+        }
+
     }
 
     private void Update()
@@ -199,8 +213,21 @@ public class GameManager : MonoBehaviour
         {
             srWindowgarden.sprite = spritesWindowgarden[1];
         }
+        if (doneMoop)
+        {
+            srMoop.sprite = spritesMoop[1];
+        }
+        if (doneSweep)
+        {
+            srSweep.sprite = spritesSweep[1];
+        }
+        if (doneWashing)
+        {
+            srSink.sprite = spritesSink[1];
+        }
 
         uiManager.UpdayCount();
+        uiManager.UpdateTask(todayScore);
     }
 
     public void SetTotalScore(float score)
@@ -229,12 +256,11 @@ public class GameManager : MonoBehaviour
         if (isMoop)
         {
             doneMoop = true;
-            srMoop.sprite = spritesMoop[1];
+            
         }
         else if (isSweep)
         {
             doneSweep = true;
-            srSweep.sprite = spritesSweep[1];
         }
         Debug.Log("QTE is Succes!");
         isQTETrigger = false;
@@ -314,9 +340,10 @@ public class GameManager : MonoBehaviour
         doneMoop = false;
         doneSweep = false;
         doneWatering = false;
+        doneWashing = false;
         hasPlayedIntro = false;
         hasPlayedEndDay = false;
-        isFailed = true;
+        isFailed = false;
         StartDayTimer();
         TryFindSpriteReferences();
 
@@ -336,7 +363,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Time's up for the day!");
 
-        if (doneMoop && doneSweep && doneWatering && totalScore >= 2000)
+        if (doneMoop && doneSweep && doneWatering && doneWashing && totalScore >= 2000)
         {
             Debug.Log("All chores done and score met. Good job!");
             dialogueTriggers[1].TriggerDialogue();
@@ -358,6 +385,7 @@ public class GameManager : MonoBehaviour
         doneMoop = false;
         doneSweep = false;
         doneWatering = false;
+        doneWashing = false;
         hasPlayedEndDay = false;
         WateringManager.instance.nextDay();
         StartDayTimer();

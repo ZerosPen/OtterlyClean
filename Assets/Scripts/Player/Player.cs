@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private Sweep qteSweep;
     private Moop qteMoop;
     private PlayerMovement playerMovement;
+    private CuciPiring DishWashing;
     [SerializeField] private PickUpWatering pickUpWatering;
 
     private void Awake()
@@ -36,6 +37,7 @@ public class Player : MonoBehaviour
         qteSweep = GetComponent<Sweep>();
         qteMoop = GetComponent<Moop>();
         playerMovement = GetComponent<PlayerMovement>();
+        DishWashing = GetComponent<CuciPiring>();
 
         DontDestroyOnLoad(gameObject);
     }
@@ -60,7 +62,14 @@ public class Player : MonoBehaviour
         dirX = playerMovement.directionX;
         dirY = playerMovement.directionY;
 
-        if (DialogueManager.Instance.isDialogueActive || QTEManager.Instance.isActive())
+        if (DishWashing.isFinished)
+        {
+            DishWashing.isFinished = false;
+            Debug.Log("Re-enabled movement after dishwashing!");
+        }
+
+        // Centralized movement control
+        if (DialogueManager.Instance.isDialogueActive || QTEManager.Instance.isActive() || DishWashing.isWashing)
         {
             playerMovement.enabled = false;
         }
@@ -95,23 +104,15 @@ public class Player : MonoBehaviour
         if (dirY <= -1)
         {
             if (holdSweep)
-            {
                 animator.Play("Walk-Down-Broom");
-            }
             else if (holdMoop)
-            {
                 animator.Play("Walk-Down-Moop");
-            }
             else if (holdWatercan)
-            {
                 animator.Play("Walk-Down-WaterPot");
-            }
             else
-            {
                 animator.Play("Walk-Down");
-            }
-        }
 
+        }
         else if (dirY >= 1)
         {
             if (holdSweep)
@@ -129,7 +130,8 @@ public class Player : MonoBehaviour
             else
             {
                 animator.Play("Walk-Up");
-            } 
+            }
+
         }
 
         if (dirX > 0 && !isFacingRight)
@@ -144,6 +146,8 @@ public class Player : MonoBehaviour
         canInteract = false;
 
         Collider2D[] collids = Physics2D.OverlapCircleAll(interact.position, interactRadius);
+
+
 
         foreach (Collider2D collid in collids)
         {
@@ -279,16 +283,14 @@ public class Player : MonoBehaviour
                 {
                     if (!pickUpWatering.isPickUp)
                     {
-                        Debug.Log($"Try Interact with {collid.name}");
+                        playerMovement.enabled = false;
+                        DishWashing.StartDishWashing();
                     }
                     else
                     {
                         Debug.Log("Put down the watering can!");
                     }
                 }
-
-                
-
                 break;
             }
 
@@ -313,6 +315,11 @@ public class Player : MonoBehaviour
                 }
                 break;
             }
+        }
+    
+        if (DishWashing.scorePiring >= GameManager.Instance.WashPlate)
+        {
+            GameManager.Instance.doneWashing = true;
         }
     }
 
@@ -403,6 +410,7 @@ public class Player : MonoBehaviour
         holdMoop = false;
         holdSweep = false;
         holdWatercan = false;
+        DishWashing.isWashing = false;
         playerMovement.enabled = true;
     }
 

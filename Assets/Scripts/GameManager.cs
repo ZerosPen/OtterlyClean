@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
             if (!exit) GameOn();
         }
 
-        if (isTimerRunning)
+        if (isTimerRunning && !DialogueManager.Instance.isDialogueActive)
         {
             currentDayTimer -= Time.deltaTime;
             uiManager.UpdateTime(currentDayTimer);

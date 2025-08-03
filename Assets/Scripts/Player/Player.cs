@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -14,6 +13,8 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask triggerBox;
     [SerializeField] private bool canInteract;
     [SerializeField] private Animator animator;
+    [SerializeField] private DialogueTrigger dialogueTriggers;
+    private bool hasPlayTutorial;
     public bool holdMoop;
     public bool holdSweep;
     public bool holdWatercan;
@@ -156,6 +157,12 @@ public class Player : MonoBehaviour
             if (((1 << collid.gameObject.layer) & triggerBox) == 0)
             {
                 continue;
+            }
+
+            if (!hasPlayTutorial && (collid.name == "Sweep" || collid.name == "Moop" || collid.name == "Wastafel" || collid.name == "BoxWaterCan" || collid.CompareTag("Plant"))){
+                dialogueTriggers.TriggerDialogue();
+                hasPlayTutorial = true;
+                dirX = dirY = 0;
             }
 
             canInteract = true;
@@ -403,16 +410,20 @@ public class Player : MonoBehaviour
         score = 0;
         multiplierScore = 1;
         DishWashing.scorePiring = 0;
+        DishWashing.amountScore = 0;
         holdMoop = false;
         holdSweep = false;
         holdWatercan = false;
         DishWashing.isWashing = false;
         playerMovement.enabled = true;
+        transform.position = new Vector3(0.76f, -0.87f, -5f);
     }
 
     public void ContinueDay()
     {
         DishWashing.scorePiring = 0;
+        DishWashing.amountScore = 0;
+        transform.position = new Vector3(0.76f, -0.87f, -5f);
         animator.Play("idle");
         holdMoop = false;
         holdSweep = false;

@@ -35,12 +35,21 @@ public class Sweep : MonoBehaviour
 
         if (playerAnimator == null)
         {
-            playerAnimator = GetComponent<Animator>();
-            if (playerAnimator == null)
+            GameObject playerGO = GameObject.FindWithTag("Player");
+            if (playerGO != null)
             {
-                Debug.LogWarning("Animator not found on Sweep GameObject.");
+                playerAnimator = playerGO.GetComponent<Animator>();
+                if (playerAnimator == null)
+                {
+                    Debug.LogWarning("Animator not found on Player GameObject.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Player GameObject not found.");
             }
         }
+
 
         Debug.Log("QTE Started! Press the correct keys in order!");
         foreach (KeyCode key in QTEManager.Instance.comboSequence)
@@ -65,6 +74,10 @@ public class Sweep : MonoBehaviour
 
             if (correct)
             {
+                if (playerAnimator != null)
+                {
+                    playerAnimator.Play("Sweeping");
+                }
                 timerPerKey = QTEManager.Instance.timerPerKey;
                 scoreToAdd += baseScore;
 
@@ -91,11 +104,6 @@ public class Sweep : MonoBehaviour
     {
         isClean = true;
         isQTEActive = false;
-
-        if (playerAnimator != null)
-        {
-            playerAnimator.Play("Sweeping");
-        }
 
         Player player = GameObject.FindWithTag("Player")?.GetComponent<Player>();
         if (player != null)

@@ -90,7 +90,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            task[3].text = $"wash plater X{GameManager.Instance.WashPlate}";
+            task[3].text = $"wash plater";
         }
         if (GameManager.Instance.totalScore > todayScore)
         {

@@ -47,14 +47,10 @@ MonoBehaviour:
   dialogue:
     dialogueLines:
     - character:
-        name: Name
-        icon: {fileID: 1497285452, guid: 7b324d4f4befb3041b18f2ca1a4f09f6, type: 3}
-      text: kamu sudah mencapai score 900!
+        name: Olli
+        icon: {fileID: 126261274, guid: 92accbdb8ea427047957fdb0b1ac29c3, type: 3}
+      text: You have reached your score for today!
     - character:
-        name: name
-        icon: {fileID: 1497285452, guid: 7b324d4f4befb3041b18f2ca1a4f09f6, type: 3}
-      text: Kamu boleh pulang :D
-    - character:
-        name: MC
-        icon: {fileID: -1888400597, guid: 1ffbc21a3fdcc34449355e36edb39b39, type: 3}
-      text: Baik terima kasih
+        name: Olli
+        icon: {fileID: 126261274, guid: 92accbdb8ea427047957fdb0b1ac29c3, type: 3}
+      text: You can rest! press space to continue!

@@ -10,6 +10,10 @@ public class CuciPiring : MonoBehaviour
     public bool isWashing;
     public bool isFinished;
     public int scorePiring = 0;
+    public float amountScore;
+    public float baseScore;
+    public float CountDownTime;
+    public float currTime;
     private int pressCount = 0;
     private Boolean isAPressed = false;
     public GameObject SponsCuci;
@@ -26,13 +30,34 @@ public class CuciPiring : MonoBehaviour
     private void Start()
     {
         isWashing = false;
+        isFinished = false;
+        currTime = CountDownTime;
     }
 
     private void Update()
     {
+        if (!GameManager.Instance.doneWashing)
+        {
+            isFinished = false;
+        }
+        if (isWashing && currTime > 0)
+        {
+            currTime -= Time.deltaTime;
+        }
+
+        if (isWashing && currTime <= 0)
+        {
+            EndMiniGame();
+        }
+
         if (isWashing)
         {
             HandleWashing();
+        }
+
+        if (isFinished)
+        {
+            GameManager.Instance.doneWashing = true;
         }
     }
 
@@ -91,15 +116,52 @@ public class CuciPiring : MonoBehaviour
         {
             scorePiring++;
             pressCount = 0;
-            isWashing = false;
-            isFinished = true;
-            HideKeyUI(); // Hide UI when done
+            EndMiniGame();
             Debug.Log("Score Piring: " + scorePiring);
+        }
+    }
+
+    private void EndMiniGame()
+    {
+        if (isFinished) return; // Prevent multiple calls
+
+        isWashing = false;
+        isFinished = true;
+        HideKeyUI();
+        Debug.Log("Mini-game ended! Total cleaned dishes: " + scorePiring);
+
+        float finalScore = 0f;
+        Player player = FindObjectOfType<Player>();
+        for (int i = 0; i < scorePiring; i++)
+        {
+            if (currTime >= CountDownTime - 5f) // if game ended with at least 5s left
+            {
+                finalScore += baseScore * (player.multiplierScore + 0.2f); // 20% bonus
+            }
+            else
+            {
+                finalScore += baseScore;
+            }
+        }
+
+        amountScore = finalScore;
+
+        // Send to player
+        
+        if (player != null)
+        {
+            player.AddScore(finalScore);
+            Debug.Log("Added score to player: " + finalScore);
+        }
+        else
+        {
+            Debug.LogWarning("Player not found in scene!");
         }
     }
 
     public void StartDishWashing()
     {
         isWashing = true;
+        currTime = CountDownTime;
     }
 }

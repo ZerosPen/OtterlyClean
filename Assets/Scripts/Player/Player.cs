@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
             playerMovement.enabled = true;
         }
 
-        if (dirX == 0 && dirY == 0)
+        if (dirX == 0 && dirY == 0 && !QTEManager.Instance.isActive())
         {
             if (holdSweep)
             {
@@ -316,11 +316,6 @@ public class Player : MonoBehaviour
                 break;
             }
         }
-    
-        if (DishWashing.scorePiring >= GameManager.Instance.WashPlate)
-        {
-            GameManager.Instance.doneWashing = true;
-        }
     }
 
     void FindpickUpWatering()
@@ -407,11 +402,22 @@ public class Player : MonoBehaviour
     {
         score = 0;
         multiplierScore = 1;
+        DishWashing.scorePiring = 0;
         holdMoop = false;
         holdSweep = false;
         holdWatercan = false;
         DishWashing.isWashing = false;
         playerMovement.enabled = true;
+    }
+
+    public void ContinueDay()
+    {
+        DishWashing.scorePiring = 0;
+        animator.Play("idle");
+        holdMoop = false;
+        holdSweep = false;
+        holdWatercan = false;
+        DishWashing.isWashing = false;
     }
 
     IEnumerator WaitAndFindpickUpWatering()

@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviour
     public float todayScore;
     private float SetValueTotalScoreUI;
     private float SetValueMultiplierScoreUI;
-    public int WashPlate;
     public int dayCount;
     public bool doneSweep;
     public bool doneMoop;
@@ -202,7 +201,7 @@ public class GameManager : MonoBehaviour
                 isTimerRunning = false;
                 EndDayByTimer();
             }
-            else if (doneMoop && doneSweep && doneWatering)
+            else if (doneMoop && doneSweep && doneWatering && doneWashing)
             {
                 isTimerRunning = false;
                 EndDayByTimer();
@@ -327,11 +326,6 @@ public class GameManager : MonoBehaviour
         resetGame();
     }
 
-    public void EndDayDialogue()
-    {
-        dialogueTriggers[2].TriggerDialogue();
-    }
-
     private void resetGame()
     {
         totalScore = 0;
@@ -346,6 +340,14 @@ public class GameManager : MonoBehaviour
         isFailed = false;
         StartDayTimer();
         TryFindSpriteReferences();
+
+        if (!doneMoop && !doneSweep && !doneWatering && !doneWashing)
+        {
+            if (srMoop != null) srMoop.sprite = spritesMoop[0];
+            if (srSweep != null) srSweep.sprite = spritesSweep[0];
+            if (srSink != null) srSink.sprite = spritesSink[0];
+            if (srWindowgarden != null) srWindowgarden.sprite = spritesWindowgarden[0];
+        }
 
         Player scPlayer = player.GetComponent<Player>();
         scPlayer.Reset();
@@ -363,7 +365,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Time's up for the day!");
 
-        if (doneMoop && doneSweep && doneWatering && doneWashing && totalScore >= 2000)
+        if (doneMoop && doneSweep && doneWatering && doneWashing && totalScore >= todayScore)
         {
             Debug.Log("All chores done and score met. Good job!");
             dialogueTriggers[1].TriggerDialogue();
@@ -388,12 +390,15 @@ public class GameManager : MonoBehaviour
         doneWashing = false;
         hasPlayedEndDay = false;
         WateringManager.instance.nextDay();
+        player.GetComponent<Player>().ContinueDay(); ;
         StartDayTimer();
 
-        if (!doneMoop && !doneSweep)
+        if (!doneMoop && !doneSweep && !doneWashing && !doneWatering)
         {
             srMoop.sprite = spritesMoop[0];
             srSweep.sprite = spritesSweep[0];
+            srSink.sprite = spritesSink[0];
+            srWindowgarden.sprite = spritesWindowgarden[0];
         }
 
         Debug.LogWarning("Game has continue!");
